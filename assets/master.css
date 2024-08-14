@@ -1,0 +1,153 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@500&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.9.2/semantic.min.css');
+@import url('https://cdn.datatables.net/2.0.3/css/dataTables.semanticui.css');
+
+:root {
+    --color-barra-lateral: #f0f0f0; /* Gris claro */
+    --color-texto: #333; /* Gris oscuro */
+    --color-fondo: #f9f9f9; /* Gris muy claro */
+    --color-primario: #6a1b9a; /* Morado */
+    --color-secundario: #d0bdf4; /* Morado claro */
+    --color-boton: #6a1b9a; /* Morado */
+    --color-boton-hover: #8e24aa; /* Morado más claro */
+    --color-error: #e57373; /* Rojo claro para mensajes de error */
+    --color-exito: #81c784; /* Verde claro para mensajes de éxito */
+}
+
+/* Estilos para el body */
+body {
+    margin: 0;
+    padding: 0;
+    background-image: url('../assets/fondo.jpg'); /* Ruta de la imagen de fondo */
+    background-size: cover; /* La imagen cubrirá todo el fondo */
+    background-repeat: no-repeat; /* Evita que la imagen se repita */
+    font-family: 'Outfit', sans-serif; /* Cambié la fuente del cuerpo */
+    height: 100vh;
+    background-color: var(--color-fondo); /* Fondo gris claro */
+}
+
+/* Estilos para el formulario de inicio de sesión */
+.login-box {
+    width: 90%; /* Cambio el ancho del formulario para que sea responsive */
+    max-width: 320px; /* Establezco un ancho máximo para mantener el diseño en dispositivos grandes */
+    height: auto; /* Ajustar la altura automáticamente */
+    background: var(--color-primario); /* Morado */
+    color: #fff;
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    box-sizing: border-box;
+    padding: 30px 20px; /* Ajusté el padding */
+    border-radius: 10px; /* Agregué bordes redondeados para el formulario */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Añadí sombra para mejorar el diseño */
+    text-align: center; /* Centrar el contenido dentro del formulario */
+}
+
+/* Estilos para el logo */
+.login-box .avatar {
+    width: 80px; /* Reducir aún más el tamaño del logo */
+    height: auto;
+    margin-bottom: 10px; /* Menos espacio debajo del logo */
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Estilos para el título */
+.login-box h1 {
+    margin: 0;
+    padding: 0 0 20px;
+    font-size: 22px;
+}
+
+/* Estilos para las etiquetas */
+.login-box label {
+    margin: 2px 0;
+    padding: 0;
+    font-weight: bold;
+    display: block;
+    color: #fff; /* Texto blanco */
+}
+
+/* Estilos para los inputs */
+.login-box input {
+    width: 100%;
+    margin-bottom: 20px;
+    border: none;
+    border-bottom: 1px solid #fff;
+    background: transparent;
+    outline: none;
+    height: 40px;
+    color: #fff;
+    font-size: 16px;
+}
+
+/* Estilos para el botón de enviar */
+.login-box input[type="submit"] {
+    border: none;
+    outline: none;
+    height: 40px;
+    background: var(--color-boton); /* Morado */
+    color: #fff;
+    font-size: 18px;
+    border-radius: 20px;
+    cursor: pointer; /* Cambié el cursor al pasar el ratón para indicar que es un botón */
+}
+
+/* Estilos para el botón de enviar al pasar el ratón */
+.login-box input[type="submit"]:hover {
+    background: var(--color-boton-hover); /* Morado más claro */
+    color: #000;
+}
+
+/* Estilos para los enlaces */
+.login-box a {
+    text-decoration: none;
+    font-size: 12px;
+    line-height: 20px;
+    color: #ccc; /* Gris claro */
+}
+
+/* Estilos para los enlaces al pasar el ratón */
+.login-box a:hover {
+    color: #fff;
+}
+
+/* Estilos para el mensaje de error */
+.error-message {
+    color: var(--color-error); /* Rojo claro */
+}
+
+/* Media Query para dispositivos con un ancho máximo de 600px */
+@media (max-width: 600px) {
+    .login-box {
+        padding: 20px 15px; /* Reduzco el relleno para dispositivos más pequeños */
+    }
+}
+
+/* Estilos para las alertas */
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.alert-danger {
+    color: #721c24;
+    background-color: var(--color-error); /* Rojo claro */
+    border-color: #f5c6cb;
+}
+
+.alert-success {
+    color: #155724;
+    background-color: var(--color-exito); /* Verde claro */
+    border-color: #c3e6cb;
+}
+
+.alert-dismissable {
+    position: relative;
+    padding-right: 35px;
+    color: #721c24;
+}
