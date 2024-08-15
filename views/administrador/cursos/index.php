@@ -23,8 +23,10 @@ if (isset($_GET['delete_id'])) {
     }
 }
 
-// Obtener y mostrar la lista de cursos
-$query = "SELECT * FROM cursos";
+// Obtener y mostrar la lista de cursos con nombres de grados
+$query = "SELECT cursos.ID_curso, cursos.Nombre_curso, grados.Nombre_grado 
+          FROM cursos 
+          JOIN grados ON cursos.ID_grado = grados.ID_grado";
 $result = $db->query($query);
 ?>
 
@@ -85,7 +87,7 @@ $result = $db->query($query);
                     <thead>
                         <tr>
                             <th>Nombre Curso</th>
-                            <th>ID Grado</th>
+                            <th>Grado</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -95,7 +97,7 @@ $result = $db->query($query);
                             while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
                                 echo "<tr>";
                                 echo "<td>" . htmlspecialchars($row['Nombre_curso']) . "</td>";
-                                echo "<td>" . htmlspecialchars($row['ID_grado']) . "</td>";
+                                echo "<td>" . htmlspecialchars($row['Nombre_grado']) . "</td>";
                                 echo "<td>";
                                 $url_update = '/dashboard/cjs/views/administrador/cursos/update.php?id=' . $row['ID_curso'];
                                 echo "<a href='" . htmlspecialchars($url_update) . "' class='boton-modificar'><img src='../../../assets/editar.svg' alt='Editar'></a>";
@@ -120,84 +122,85 @@ $result = $db->query($query);
     </section>
     <script>
         $(document).ready(function() {
-            var table = $('#tabla-cursos').DataTable({
-                "language": {
-                    "decimal": "",
-                    "emptyTable": "No hay datos disponibles en la tabla",
-                    "info": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
-                    "infoEmpty": "Mostrando 0 a 0 de 0 entradas",
-                    "infoFiltered": "(filtrado de _MAX_ entradas totales)",
-                    "infoPostFix": "",
-                    "thousands": ",",
-                    "lengthMenu": "Mostrar _MENU_ entradas",
-                    "loadingRecords": "Cargando...",
-                    "processing": "Procesando...",
-                    "search": "Buscar:",
-                    "zeroRecords": "No se encontraron registros coincidentes",
-                    "paginate": {
-                        "first": "Primero",
-                        "last": "Último",
-                        "next": "Siguiente",
-                        "previous": "Anterior"
-                    },
-                    "aria": {
-                        "sortAscending": ": activar para ordenar la columna ascendente",
-                        "sortDescending": ": activar para ordenar la columna descendente"
-                    }
-                },
-                dom: 'Bfrtip',
-                buttons: [
-                    'copy', 'csv', 'excel', 'pdf'
-                ],
-                paging: true,
-                pageLength: 5
-            });
-
-            // Confirmación de eliminación con SweetAlert2
-            $('.boton-eliminar').on('click', function(e) {
-                e.preventDefault();
-                var deleteId = $(this).data('id');
-                Swal.fire({
-                    title: '¿Estás seguro?',
-                    text: "¡No podrás revertir esto!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Sí, eliminar',
-                    cancelButtonText: 'Cancelar'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Redirigir a la URL de eliminación
-                        window.location.href = '<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>?delete_id=' + deleteId;
-                    }
-                });
-            });
-
-            // Mostrar mensaje de éxito si se pasa la variable 'success' en la URL
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.has('success')) {
-                Swal.fire({
-                    icon: 'success',
-                    title: '¡El curso ha sido eliminado!',
-                    text: 'Redirigiendo a la página principal.',
-                    timer: 2000,
-                    timerProgressBar: true,
-                    willClose: () => {
-                        window.location.href = 'index.php';
-                    }
-                });
+    var table = $('#tabla-cursos').DataTable({
+        "language": {
+            "decimal": "",
+            "emptyTable": "No hay datos disponibles en la tabla",
+            "info": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+            "infoEmpty": "Mostrando 0 a 0 de 0 entradas",
+            "infoFiltered": "(filtrado de _MAX_ entradas totales)",
+            "infoPostFix": "",
+            "thousands": ",",
+            "lengthMenu": "Mostrar _MENU_ entradas",
+            "loadingRecords": "Cargando...",
+            "processing": "Procesando...",
+            "search": "Buscar:",
+            "zeroRecords": "No se encontraron registros coincidentes",
+            "paginate": {
+                "first": "Primero",
+                "last": "Último",
+                "next": "Siguiente",
+                "previous": "Anterior"
+            },
+            "aria": {
+                "sortAscending": ": activar para ordenar la columna ascendente",
+                "sortDescending": ": activar para ordenar la columna descendente"
             }
+        },
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf'
+        ],
+        paging: true,
+        pageLength: 5
+    });
 
-            // Mostrar mensaje de error si se pasa la variable 'error' en la URL
-            if (urlParams.has('error')) {
-                Swal.fire({
-                    icon: 'error',
-                    title: '¡Error al eliminar el curso!',
-                    text: 'Por favor, inténtelo nuevamente.',
-                });
+    // Confirmación de eliminación con SweetAlert2 usando delegación de eventos
+    $('#tabla-cursos').on('click', '.boton-eliminar', function(e) {
+        e.preventDefault();
+        var deleteId = $(this).data('id');
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¡No podrás revertir esto!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Redirigir a la URL de eliminación
+                window.location.href = '<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>?delete_id=' + deleteId;
             }
         });
+    });
+
+    // Mostrar mensaje de éxito si se pasa la variable 'success' en la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('success')) {
+        Swal.fire({
+            icon: 'success',
+            title: '¡El curso ha sido eliminado!',
+            text: 'Redirigiendo a la página principal.',
+            timer: 1000,
+            timerProgressBar: true,
+            willClose: () => {
+                window.location.href = 'index.php';
+            }
+        });
+    }
+
+    // Mostrar mensaje de error si se pasa la variable 'error' en la URL
+    if (urlParams.has('error')) {
+        Swal.fire({
+            icon: 'error',
+            title: '¡Error al eliminar el curso!',
+            text: 'Por favor, inténtelo nuevamente.',
+        });
+    }
+});
+
     </script>
     <footer>
         <p>Todos los derechos reservados</p>

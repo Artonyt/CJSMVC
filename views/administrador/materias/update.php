@@ -8,6 +8,7 @@ $nombre_materia = '';
 $id_asignatura = '';
 $asignaturas = [];
 $error = '';
+$success = false;
 
 // Obtener la materia actual si se proporciona un ID válido
 if (isset($_GET['id'])) {
@@ -53,8 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt_update->bindParam(':id_materia', $id_materia);
 
         if ($stmt_update->execute()) {
-            header("Location: index.php");
-            exit();
+            $success = true;
         } else {
             $error = "Error al actualizar la materia.";
         }
@@ -69,6 +69,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Actualizar Materia</title>
     <link rel="stylesheet" type="text/css" href="../../../assets/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            <?php if ($success): ?>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Materia actualizada',
+                    text: 'La materia se ha actualizado exitosamente.',
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                    window.location.href = 'index.php';
+                });
+            <?php elseif (!empty($error)): ?>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: <?php echo json_encode($error); ?>,
+                    timer: 3000,
+                    showConfirmButton: false
+                });
+            <?php endif; ?>
+        });
+    </script>
     <style>
         body {
             font-family: Arial, sans-serif;

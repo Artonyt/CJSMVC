@@ -2,6 +2,9 @@
 require_once '../../../config/db.php';
 require_once '../../../router.php';
 
+// Inicializar la variable de éxito
+$success = false;
+
 // Verificar si se ha proporcionado un ID de estudiante
 if (!isset($_GET['id']) || empty($_GET['id'])) {
     echo "ID de estudiante no proporcionado.";
@@ -59,13 +62,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bindParam(':id_estudiante', $id_estudiante);
 
     if ($stmt->execute()) {
-        // Redirigir de vuelta a la página de gestión de estudiantes después de actualizar el estudiante
-        header("Location: index.php");
-        exit();
-    } else {
-        echo "Error al intentar actualizar el estudiante.";
+        $success = true;
     }
 }
+
+// Obtener los cursos para el menú desplegable
+$query = "SELECT ID_curso, Nombre_curso FROM cursos";
+$stmt = $db->prepare($query);
+$stmt->execute();
+$cursos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -75,6 +80,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Actualizar Estudiante</title>
     <link rel="stylesheet" type="text/css" href="../../../assets/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            <?php if ($success): ?>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Estudiante actualizado',
+                    text: 'El estudiante se ha actualizado exitosamente.',
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                    window.location.href = 'index.php';
+                });
+            <?php endif; ?>
+        });
+    </script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -115,14 +136,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .formulario button:hover {
             background-color: #45a049;
         }
-        .regresar {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .regresar a {
-            text-decoration: none;
-            color: #007BFF;
-        }
+   
     </style>
 </head>
 <body>
@@ -165,8 +179,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label for="correo_electronico">Correo Electrónico:</label>
                 <input type="email" id="correo_electronico" name="correo_electronico" value="<?php echo htmlspecialchars($estudiante['Correo_electronico']); ?>" required>
 
-                <label for="id_curso">ID Curso:</label>
-                <input type="text" id="id_curso" name="id_curso" value="<?php echo htmlspecialchars($estudiante['ID_curso']); ?>" required>
+                <label for="id_curso">Curso:</label>
+                <select id="id_curso" name="id_curso" required>
+                    <?php foreach ($cursos as $curso): ?>
+                        <option value="<?php echo htmlspecialchars($curso['ID_curso']); ?>" <?php if ($curso['ID_curso'] == $estudiante['ID_curso']) echo 'selected'; ?>>
+                            <?php echo htmlspecialchars($curso['Nombre_curso']); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
 
                 <button type="submit" class="button boton-centrado">Actualizar Estudiante</button>
             </form>

@@ -114,7 +114,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .form-group button {
             width: 100%;
             padding: 10px;
-            background-color: #66BB6A;
+            background-color: #6f42c1;
             color: #fff;
             border: none;
             border-radius: 4px;
@@ -123,7 +123,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             transition: background-color 0.3s ease;
         }
         .form-group button:hover {
-            background-color: #0056b3;
+            background-color: #5a2d91;
         }
     </style>
 </head>
@@ -141,7 +141,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="descripcion-ambiente">
                 <p>Nueva Asignatura</p>
             </div>
-            <div class="tabla-ambientes tabla-scroll">
+            
                 <div class="form-container">
                     <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
                         <div class="form-group">
@@ -153,7 +153,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         </div>
                     </form>
                 </div>
-            </div>
+           
             <div class="regresar">
                 <a href="index.php" class="button boton-centrado" id="btn-regresar">Regresar</a>
             </div>

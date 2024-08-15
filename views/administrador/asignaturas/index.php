@@ -1,30 +1,30 @@
 <?php
-    // Conectar a la base de datos
-    require_once '../../../config/db.php';
+// Conectar a la base de datos
+require_once '../../../config/db.php';
 
-    // Procesar la eliminación si se recibe un ID válido por GET
-    if (isset($_GET['delete_id'])) {
-        $delete_id = $_GET['delete_id'];
+// Procesar la eliminación si se recibe un ID válido por GET
+if (isset($_GET['delete_id'])) {
+    $delete_id = $_GET['delete_id'];
 
-        // Verificar si el ID es válido y realizar la eliminación
-        if (!empty($delete_id)) {
-            $query = "DELETE FROM asignaturas WHERE ID_asignatura = :delete_id";
-            $stmt = $db->prepare($query);
-            $stmt->bindParam(':delete_id', $delete_id);
+    // Verificar si el ID es válido y realizar la eliminación
+    if (!empty($delete_id)) {
+        $query = "DELETE FROM asignaturas WHERE ID_asignatura = :delete_id";
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':delete_id', $delete_id);
 
-            if ($stmt->execute()) {
-                // Redirigir de vuelta a la página actual después de la eliminación
-                header("Location: index.php");
-                exit();
-            } else {
-                echo "Error al intentar eliminar la asignatura.";
-            }
+        if ($stmt->execute()) {
+            // Redirigir de vuelta a la página actual después de la eliminación
+            header("Location: index.php");
+            exit();
+        } else {
+            echo "Error al intentar eliminar la asignatura.";
         }
     }
+}
 
-    // Obtener y mostrar la lista de asignaturas
-    $query = "SELECT * FROM asignaturas";
-    $result = $db->query($query);
+// Obtener y mostrar la lista de asignaturas
+$query = "SELECT * FROM asignaturas";
+$result = $db->query($query);
 ?>
 
 <!DOCTYPE html>
@@ -148,13 +148,13 @@
                     'copy', 'csv', 'excel', 'pdf'
                 ],
                 paging: true,
-                pageLength: 5
+                pageLength: 6
             });
 
-            // Confirmación de eliminación con SweetAlert2
-            $('.boton-eliminar').on('click', function(e) {
+            // Confirmación de eliminación con SweetAlert2 usando delegación de eventos
+            $('#tabla-asignaturas').on('click', '.boton-eliminar', function(e) {
                 e.preventDefault();
-                var deleteUrl = $(this).data('id');
+                var deleteId = $(this).data('id');
                 Swal.fire({
                     title: '¿Estás seguro?',
                     text: "¡No podrás revertir esto!",
@@ -167,7 +167,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         // Redirigir a la URL de eliminación
-                        window.location.href = '<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>?delete_id=' + deleteUrl;
+                        window.location.href = '<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>?delete_id=' + deleteId;
                     }
                 });
             });

@@ -3,7 +3,10 @@
 require_once '../../../config/db.php';
 require_once '../../../router.php';
 
-// Verificar si se recibió un ID válido por GET
+// Inicializar variables para mensajes
+$success = false;
+$errorMessage = '';
+
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
 
@@ -33,11 +36,13 @@ if (isset($_GET['id'])) {
         // Ejecutar la actualización
         try {
             $stmt->execute();
-            // Redirigir de vuelta a la página de listado de docentes
-            header("Location: index.php");
+            $success = true; // Actualización exitosa
+            header("Location: update.php?id=$id&success=true");
             exit();
         } catch (PDOException $e) {
-            echo "Error al intentar actualizar el docente: " . $e->getMessage();
+            $errorMessage = "Error al intentar actualizar el docente: " . $e->getMessage();
+            header("Location: update.php?id=$id&error=true");
+            exit();
         }
     } else {
         // Obtener los datos actuales del docente para mostrar en el formulario
@@ -52,15 +57,13 @@ if (isset($_GET['id'])) {
             exit();
         }
 
-        // Mostrar el formulario de actualización con los datos actuales
-        // Los campos del formulario deberían tener los valores actuales del docente
+        // Mostrar el formulario de actualización con los datos actuales del docente
     }
 } else {
     echo "ID de docente no especificado.";
     exit();
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="es">
@@ -77,6 +80,7 @@ if (isset($_GET['id'])) {
     <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         /* Estilos específicos para la sección admin */
         .admin {
@@ -207,14 +211,43 @@ if (isset($_GET['id'])) {
             </form>
         </section>
         <div class="regresar">
-            <a href="index.php" class="button boton-centrado" id="btn-regresar">Regresar </a>
+            <a href="index.php" class="button boton-centrado" id="btn-regresar">Regresar</a>
         </div>
         <div class="salir">
-                <button id="btn_salir">Salir</button>
-            </div>
+            <button id="btn_salir">Salir</button>
+        </div>
     </section>
     <footer>
         <p>Todos los derechos reservados</p>
     </footer>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            if (urlParams.has('success')) {
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Actualización exitosa!',
+                    text: 'El docente ha sido actualizado correctamente.',
+                    timer: 3000, // 3 segundos
+                    timerProgressBar: true,
+                    willClose: () => {
+                        window.location.href = 'index.php';
+                    }
+                });
+            }
+
+            if (urlParams.has('error')) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '¡Error al actualizar el docente!',
+                    text: 'Por favor, inténtelo nuevamente.',
+                    timer: 3000, // 3 segundos
+                    timerProgressBar: true
+                });
+            }
+        });
+    </script>
 </body>
 </html>

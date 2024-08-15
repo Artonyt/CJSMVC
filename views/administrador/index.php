@@ -79,10 +79,12 @@ require_once '../../config/db.php';
     $urls = [
         '/dashboard/cjs/views/administrador/asignaturas' => 'Gestión de Asignaturas',
         '/dashboard/cjs/views/administrador/cursos' => 'Gestión de Cursos',
+        '/dashboard/cjs/views/administrador/cursosdocentes' => 'Gestión de Cursos Docentes',
         '/dashboard/cjs/views/administrador/docentes' => 'Gestión de Docentes',
         '/dashboard/cjs/views/administrador/estudiantes' => 'Gestion de Estudiantes',
         '/dashboard/cjs/views/administrador/materias' => 'Gestion de Materias',
         '/dashboard/cjs/views/administrador/materiascursos' => 'Gestion Materias Cursos',
+        '/dashboard/cjs/views/administrador/administradores' => 'Agregar Administrador',
     ];
 
     $i = 0;

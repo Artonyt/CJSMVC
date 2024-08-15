@@ -2,12 +2,12 @@
 // Incluir el archivo de conexión a la base de datos
 require_once '../../../config/db.php';
 
-// Variables para almacenar los valores del formulario
+// Inicializar variables para almacenar los valores del formulario y el mensaje de error
 $nombres = $apellidos = $identificacion = $contraseña = $direccion = $telefono = $correo_electronico = '';
-$errorMessage = '';
+$mensaje = '';
 
 // Procesar el formulario cuando se envía
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Recibir y sanitizar los datos del formulario
     $nombres = htmlspecialchars($_POST['nombres'] ?? '');
     $apellidos = htmlspecialchars($_POST['apellidos'] ?? '');
@@ -17,9 +17,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $telefono = htmlspecialchars($_POST['telefono'] ?? '');
     $correo_electronico = htmlspecialchars($_POST['correo_electronico'] ?? '');
 
-    // Validar campos requeridos (puedes agregar más validaciones según tus necesidades)
+    // Validar campos requeridos
     if (empty($nombres) || empty($apellidos) || empty($identificacion) || empty($contraseña) || empty($correo_electronico)) {
-        $errorMessage = 'Por favor complete todos los campos obligatorios.';
+        $mensaje = 'error'; // Mensaje de error si faltan campos
     } else {
         try {
             // Preparar la consulta SQL para insertar un nuevo usuario
@@ -36,18 +36,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Ejecutar la consulta
             if ($stmt->execute()) {
-                // Éxito: redirigir con mensaje
-                $successMessage = 'Usuario creado exitosamente.';
-                echo "<script>
-                        alert('{$successMessage}');
-                        window.location.href = 'index.php'; // Redireccionar a la página de inicio
-                      </script>";
-                exit();
+                $mensaje = 'success'; // Mensaje de éxito si se crea el usuario correctamente
             } else {
-                $errorMessage = 'Error al intentar crear el usuario.';
+                $mensaje = 'error'; // Mensaje de error si falla la creación
             }
         } catch(PDOException $e) {
-            $errorMessage = 'Error de conexión: ' . $e->getMessage();
+            $mensaje = 'error'; // Mensaje de error en caso de excepción
         }
     }
 }
@@ -60,15 +54,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Administrativo - Crear Nuevo Docente</title>
     <link rel="stylesheet" type="text/css" href="../../../assets/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        /* Estilos específicos para este formulario */
         body {
             font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+            background-color: #f7f7f7;
             margin: 0;
             padding: 0;
         }
-    
         .logo-container {
             display: flex;
             justify-content: center;
@@ -82,46 +75,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin-bottom: 20px;
         }
         .admin {
-            max-width: 800px;
+            max-width: 600px;
             margin: 20px auto;
             background-color: #fff;
             border: 1px solid #ddd;
             border-radius: 8px;
             padding: 20px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        .subtitulo-admin {
-            background-color: #007bff;
-            color: #fff;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .crear-asignatura {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .crear-asignatura a.button {
-            display: inline-block;
-            background-color: #28a745;
-            color: #fff;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 4px;
-            transition: background-color 0.3s ease;
-        }
-        .crear-asignatura a.button:hover {
-            background-color: #218838;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
         }
         .form-container {
-            max-width: 400px;
             margin: auto;
             background-color: #f9f9f9;
             padding: 20px;
             border: 1px solid #ddd;
             border-radius: 8px;
-            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         }
         .form-group {
             margin-bottom: 1rem;
@@ -131,17 +99,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-weight: bold;
             margin-bottom: 0.5rem;
         }
-        .form-group input[type="text"] {
-            width: calc(100% - 22px);
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="password"] {
+            width: calc(100% - 20px);
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
             font-size: 16px;
+            margin-bottom: 10px;
         }
         .form-group button {
             width: 100%;
             padding: 10px;
-            background-color: #66BB6A;
+            background-color: #6f42c1;
             color: #fff;
             border: none;
             border-radius: 4px;
@@ -150,62 +121,86 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             transition: background-color 0.3s ease;
         }
         .form-group button:hover {
-            background-color: #0056b3;
+            background-color: #5a2d91;
         }
     </style>
 </head>
 <body>
-<header>
-    <div class="logo-container">
-        <img src="../../../assets/Logo.png" alt="Logo de la empresa" class="logo">
-    </div>
-    <div class="title">
-        <h1>Crear Nuevo Docente</h1>
-    </div>
-</header>
-<section class="admin">
-<section class="asignaturas" id="section-asignaturas">
-<div class="descripcion-ambiente">
-                <p>Nuevo Docente</p>
-            </div>
-    <form id="createUsuarioForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
-        <?php if (!empty($errorMessage)) : ?>
-            <p class="error-message"><?php echo $errorMessage; ?></p>
-        <?php endif; ?>
-        <label for="nombres">Nombres:</label><br>
-        <input type="text" id="nombres" name="nombres" value="<?php echo $nombres; ?>" required><br><br>
+    <header>
+        <div class="logo-container">
+            <img src="../../../assets/Logo.png" alt="Logo de la empresa" class="logo">
+        </div>
+        <div class="title">
+            <h1>Crear Nuevo Docente</h1>
+        </div>
+    </header>
+    <section class="admin">
+        <div class="form-container">
+            <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
+                <div class="form-group">
+                    <label for="nombres">Nombres:</label>
+                    <input type="text" id="nombres" name="nombres" value="<?php echo htmlspecialchars($nombres); ?>" required>
+                </div>
+                <div class="form-group">
+                    <label for="apellidos">Apellidos:</label>
+                    <input type="text" id="apellidos" name="apellidos" value="<?php echo htmlspecialchars($apellidos); ?>" required>
+                </div>
+                <div class="form-group">
+                    <label for="identificacion">Identificación:</label>
+                    <input type="text" id="identificacion" name="identificacion" value="<?php echo htmlspecialchars($identificacion); ?>" required>
+                </div>
+                <div class="form-group">
+                    <label for="contraseña">Contraseña:</label>
+                    <input type="password" id="contraseña" name="contraseña" required>
+                </div>
+                <div class="form-group">
+                    <label for="direccion">Dirección:</label>
+                    <input type="text" id="direccion" name="direccion" value="<?php echo htmlspecialchars($direccion); ?>">
+                </div>
+                <div class="form-group">
+                    <label for="telefono">Teléfono:</label>
+                    <input type="text" id="telefono" name="telefono" value="<?php echo htmlspecialchars($telefono); ?>">
+                </div>
+                <div class="form-group">
+                    <label for="correo_electronico">Correo Electrónico:</label>
+                    <input type="email" id="correo_electronico" name="correo_electronico" value="<?php echo htmlspecialchars($correo_electronico); ?>" required>
+                </div>
+                <div class="form-group">
+                    <button type="submit">Guardar Usuario</button>
+                </div>
+            </form>
+        </div>
+        <div class="regresar">
+            <a href="index.php" class="button boton-centrado">Regresar</a>
+        </div>
+    </section>
+    <footer>
+        <p>Todos los derechos reservados</p>
+    </footer>
 
-        <label for="apellidos">Apellidos:</label><br>
-        <input type="text" id="apellidos" name="apellidos" value="<?php echo $apellidos; ?>" required><br><br>
-
-        <label for="identificacion">Identificación:</label><br>
-        <input type="text" id="identificacion" name="identificacion" value="<?php echo $identificacion; ?>" required><br><br>
-
-        <label for="contraseña">Contraseña:</label><br>
-        <input type="password" id="contraseña" name="contraseña" required><br><br>
-
-        <label for="direccion">Dirección:</label><br>
-        <input type="text" id="direccion" name="direccion" value="<?php echo $direccion; ?>"><br><br>
-
-        <label for="telefono">Teléfono:</label><br>
-        <input type="text" id="telefono" name="telefono" value="<?php echo $telefono; ?>"><br><br>
-
-        <label for="correo_electronico">Correo Electrónico:</label><br>
-        <input type="email" id="correo_electronico" name="correo_electronico" value="<?php echo $correo_electronico; ?>" required><br><br>
-
-        <button type="submit">Guardar Usuario</button>
-    </form>
-</div>
-<div class="regresar">
-    <a href="index.php" class="button boton-centrado" id="btn-regresar">Regresar </a>
-</div>
-<div class="salir">
-    <button id="btn_salir">Salir</button>
-</div>
-</section>
-</section>
-<footer>
-    <p>Sena todos los derechos reservados </p>
-</footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            <?php if ($mensaje == 'success'): ?>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Usuario Creado',
+                    text: 'El usuario se creó correctamente.',
+                    showConfirmButton: false,
+                    timer: 1500,
+                    timerProgressBar: true,
+                    didClose: () => {
+                        window.location.href = 'index.php'; // Redirige al index después de la notificación
+                    }
+                });
+            <?php elseif ($mensaje == 'error'): ?>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Hubo un problema al crear el usuario. Intenta de nuevo.',
+                    showConfirmButton: true
+                });
+            <?php endif; ?>
+        });
+    </script>
 </body>
 </html>

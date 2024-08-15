@@ -1,6 +1,10 @@
 <?php
 require_once '../../../config/db.php';
 
+// Inicializar variables
+$success = false;
+$error = '';
+
 // Obtener listas de materias y cursos para mostrar en los formularios
 $queryMaterias = "SELECT * FROM materias";
 $queryCursos = "SELECT * FROM cursos";
@@ -11,18 +15,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $id_materia = $_POST['id_materia'];
     $id_curso = $_POST['id_curso'];
 
-    // Insertar la nueva relación en la tabla materias_cursos
-    $queryInsert = "INSERT INTO materias_cursos (ID_materia, ID_curso) VALUES (:id_materia, :id_curso)";
-    $stmt = $db->prepare($queryInsert);
-    $stmt->bindParam(':id_materia', $id_materia);
-    $stmt->bindParam(':id_curso', $id_curso);
+    // Verificar si la relación ya existe
+    $queryCheck = "SELECT COUNT(*) FROM materias_cursos WHERE ID_materia = :id_materia AND ID_curso = :id_curso";
+    $stmtCheck = $db->prepare($queryCheck);
+    $stmtCheck->bindParam(':id_materia', $id_materia);
+    $stmtCheck->bindParam(':id_curso', $id_curso);
+    $stmtCheck->execute();
+    $exists = $stmtCheck->fetchColumn();
 
-    if ($stmt->execute()) {
-        // Redirigir al índice después de la inserción
-        header("Location: index.php");
-        exit();
+    if ($exists > 0) {
+        $error = "La materia ya está asignada al curso seleccionado.";
     } else {
-        echo "Error al intentar asignar la materia al curso.";
+        // Insertar la nueva relación en la tabla materias_cursos
+        $queryInsert = "INSERT INTO materias_cursos (ID_materia, ID_curso) VALUES (:id_materia, :id_curso)";
+        $stmtInsert = $db->prepare($queryInsert);
+        $stmtInsert->bindParam(':id_materia', $id_materia);
+        $stmtInsert->bindParam(':id_curso', $id_curso);
+
+        if ($stmtInsert->execute()) {
+            $success = true;
+            // Mostrar alerta de éxito y redirigir después de un temporizador
+        } else {
+            $error = "Error al intentar asignar la materia al curso.";
+        }
     }
 }
 ?>
@@ -34,14 +49,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Asignar Materia a Curso</title>
     <link rel="stylesheet" type="text/css" href="../../../assets/styles.css">
-</head>
-<style>body {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
             font-family: Arial, sans-serif;
             background-color: #f9f9f9;
             margin: 0;
             padding: 0;
         }
-   
         .formulario {
             max-width: 500px;
             margin: 30px auto;
@@ -75,8 +90,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             border-radius: 4px;
             font-size: 16px;
             cursor: pointer;
-            width: 100%;
-            box-sizing: border-box;
+            width: auto; /* Cambiado de 100% a auto para que el botón no ocupe todo el ancho */
+            margin: 0 auto; /* Centrará el botón horizontalmente */
+            display: block; /* Asegura que el margen auto funcione para centrar el botón */
         }
         .form-group button:hover {
             background-color: #5a2d91;
@@ -89,8 +105,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             padding: 15px;
             margin-bottom: 20px;
         }
-
     </style>
+</head>
 <body>
     <header>
         <div class="logo-container">
@@ -101,9 +117,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
     </header>
     <section class="create">
-        <div class="subtitulo-create">
-            <h2>Asignar Materia a un Curso</h2>
-        </div>
+        <?php if (!empty($error)): ?>
+            <div class="error">
+                <p><?php echo htmlspecialchars($error); ?></p>
+            </div>
+        <?php endif; ?>
         <form method="POST" action="">
             <div class="form-group">
                 <label for="id_materia">Materia:</label>
@@ -127,7 +145,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     ?>
                 </select>
             </div>
-            <button type="submit" class="button boton-centrado">Asignar</button>
+            <div class="form-group">
+                <button type="submit">Crear Materia</button>
+            </div>
         </form>
         <div class="regresar">
             <a href="index.php" class="button boton-centrado">Regresar</a>
@@ -136,5 +156,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <footer>
         <p>Todos los derechos reservados</p>
     </footer>
+
+    <script>
+        // Mostrar alerta de éxito o error según el resultado de la inserción
+        document.addEventListener('DOMContentLoaded', function() {
+            <?php if ($success): ?>
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Éxito!',
+                    text: 'Materia asignada al curso con éxito.',
+                    timer: 2000, // 2 segundos
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                }).then((result) => {
+                    if (result.dismiss === Swal.DismissReason.timer) {
+                        window.location.href = 'index.php';
+                    }
+                });
+            <?php elseif (!empty($error)): ?>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: '<?php echo addslashes($error); ?>',
+                    timer: 5000, // 5 segundos
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });
+            <?php endif; ?>
+        });
+    </script>
 </body>
 </html>

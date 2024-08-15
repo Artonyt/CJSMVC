@@ -23,8 +23,9 @@
         }
     }
 
-    // Obtener y mostrar la lista de estudiantes
-    $query = "SELECT * FROM estudiantes";
+    // Obtener y mostrar la lista de estudiantes con el nombre del curso
+    $query = "SELECT e.*, c.nombre_curso FROM estudiantes e
+              JOIN cursos c ON e.ID_curso = c.ID_curso";
     $result = $db->query($query);
 ?>
 
@@ -43,7 +44,7 @@
     <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- Añadido -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <header>
@@ -84,7 +85,6 @@
                 <table class="table table-striped table-dark table_id" border="1" id="tabla-estudiantes">
                     <thead>
                         <tr>
-                            <th>ID Estudiante</th>
                             <th>Nombres</th>
                             <th>Apellidos</th>
                             <th>Identificación</th>
@@ -93,7 +93,7 @@
                             <th>Dirección</th>
                             <th>Teléfono</th>
                             <th>Correo Electrónico</th>
-                            <th>ID Curso</th>
+                            <th>Curso</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -102,7 +102,6 @@
                         if ($result->rowCount() > 0) {
                             while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
                                 echo "<tr>";
-                                echo "<td>" . htmlspecialchars($row['ID_estudiante']) . "</td>";
                                 echo "<td>" . htmlspecialchars($row['Nombres']) . "</td>";
                                 echo "<td>" . htmlspecialchars($row['Apellidos']) . "</td>";
                                 echo "<td>" . htmlspecialchars($row['Identificacion']) . "</td>";
@@ -111,7 +110,7 @@
                                 echo "<td>" . htmlspecialchars($row['Direccion']) . "</td>";
                                 echo "<td>" . htmlspecialchars($row['Telefono']) . "</td>";
                                 echo "<td>" . htmlspecialchars($row['Correo_electronico']) . "</td>";
-                                echo "<td>" . htmlspecialchars($row['ID_curso']) . "</td>";
+                                echo "<td>" . htmlspecialchars($row['nombre_curso']) . "</td>"; // Cambiado aquí
                                 echo "<td>";
                                 $url_update = '/dashboard/cjs/views/administrador/estudiantes/update.php?id=' . $row['ID_estudiante'];
                                 echo "<a href='" . htmlspecialchars($url_update) . "' class='boton-modificar'><img src='../../../assets/editar.svg' alt='Editar'></a>";

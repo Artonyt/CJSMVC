@@ -1,6 +1,5 @@
 <?php
 require_once '../../../config/db.php';
-require_once '../../../router.php';
 
 // Procesar el formulario cuando se envía
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -36,6 +35,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "Error al intentar crear el estudiante.";
     }
 }
+
+// Obtener los cursos para el menú desplegable
+$query = "SELECT ID_curso, Nombre_curso FROM cursos";
+$stmt = $db->prepare($query);
+$stmt->execute();
+$cursos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -45,6 +50,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crear Nuevo Estudiante</title>
     <link rel="stylesheet" type="text/css" href="../../../assets/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -78,21 +84,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             font-size: 18px;
             border: none;
             border-radius: 4px;
-            background-color: #4CAF50;
+            background-color: #6f42c1;
             color: white;
             cursor: pointer;
         }
         .formulario button:hover {
-            background-color: #45a049;
+            background-color: #5a2d91;
         }
-        .regresar {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .regresar a {
-            text-decoration: none;
-            color: #007BFF;
-        }
+       
     </style>
 </head>
 <body>
@@ -135,10 +134,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label for="correo_electronico">Correo Electrónico:</label>
                 <input type="email" id="correo_electronico" name="correo_electronico" required>
 
-                <label for="id_curso">ID Curso:</label>
-                <input type="text" id="id_curso" name="id_curso" required>
+                <label for="id_curso">Curso:</label>
+                <select id="id_curso" name="id_curso" required>
+                    <?php foreach ($cursos as $curso): ?>
+                        <option value="<?php echo htmlspecialchars($curso['ID_curso']); ?>">
+                            <?php echo htmlspecialchars($curso['Nombre_curso']); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
 
-                <button type="submit" class="button boton-centrado">Crear Estudiante</button>
+                <button type="submit" class="button">Crear Estudiante</button>
             </form>
             <div class="regresar">
                 <a href="index.php" class="button boton-centrado" id="btn-regresar">Regresar</a>
@@ -148,5 +153,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <footer>
         <p>Todos los derechos reservados</p>
     </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            <?php if (isset($_GET['success']) && $_GET['success'] == '1'): ?>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Estudiante creado',
+                    text: 'El estudiante se ha creado exitosamente.',
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                    window.location.href = 'index.php';
+                });
+            <?php endif; ?>
+        });
+    </script>
 </body>
 </html>

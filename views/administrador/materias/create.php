@@ -6,6 +6,7 @@ require_once '../../../router.php';
 $nombre_materia = '';
 $id_asignatura = '';
 $error = '';
+$success = false;
 $asignaturas = [];
 
 // Obtener asignaturas para el menú desplegable
@@ -29,8 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bindParam(':id_asignatura', $id_asignatura);
 
         if ($stmt->execute()) {
-            header("Location: index.php");
-            exit();
+            $success = true;
         } else {
             $error = "Error al crear la materia.";
         }
@@ -45,6 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crear Nueva Materia</title>
     <link rel="stylesheet" type="text/css" href="../../../assets/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -100,7 +101,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             padding: 15px;
             margin-bottom: 20px;
         }
-
     </style>
 </head>
 <body>
@@ -121,7 +121,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <p><?php echo htmlspecialchars($error); ?></p>
             </div>
         <?php endif; ?>
-        <form method="POST" action="create.php" class="formulario">
+        <form method="POST" action="create.php" class="formulario" id="formulario">
             <div class="form-group">
                 <label for="Nombre_materia">Nombre de la Materia:</label>
                 <input type="text" id="Nombre_materia" name="Nombre_materia" value="<?php echo htmlspecialchars($nombre_materia); ?>" required>
@@ -148,5 +148,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <footer>
         <p>Todos los derechos reservados</p>
     </footer>
+
+    <script>
+        // Mostrar alerta de éxito o error según el resultado de la inserción
+        document.addEventListener('DOMContentLoaded', function() {
+            <?php if ($success): ?>
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Éxito!',
+                    text: 'Materia creada con éxito.',
+                    timer: 2000, 
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                }).then((result) => {
+                    if (result.dismiss === Swal.DismissReason.timer) {
+                        window.location.href = 'index.php';
+                    }
+                });
+            <?php elseif (!empty($error)): ?>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: '<?php echo addslashes($error); ?>',
+                    timer: 5000, // 5 segundos
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });
+            <?php endif; ?>
+        });
+    </script>
 </body>
 </html>

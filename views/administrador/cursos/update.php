@@ -6,6 +6,7 @@
     // Definir variables y mensajes de error
     $id_curso = $nombre_curso = "";
     $nombre_curso_err = "";
+    $success = false;
 
     // Procesar formulario cuando se envíe
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -36,9 +37,8 @@
 
                 // Intentar ejecutar la declaración preparada
                 if ($stmt->execute()) {
-                    // Redirigir de vuelta a la página de cursos después de la actualización
-                    header("location: index.php");
-                    exit();
+                    // Cambiar el estado de éxito a verdadero
+                    $success = true;
                 } else {
                     echo "Oops! Algo salió mal. Por favor, intenta nuevamente más tarde.";
                 }
@@ -224,14 +224,31 @@
             </form>
         </div>
         <div class="regresar">
-                <a href="index.php" class="button boton-centrado" id="btn-regresar">Regresar </a>
-            </div>
-            <div class="salir">
-                <button id="btn_salir">Salir</button>
-            </div>
+            <a href="index.php" class="button boton-centrado" id="btn-regresar">Regresar </a>
+        </div>
+        <div class="salir">
+            <button id="btn_salir">Salir</button>
+        </div>
     </section>
     <footer>
         <p>Todos los derechos reservados</p>
     </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            <?php if ($success): ?>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Curso actualizado',
+                    text: 'El curso se ha actualizado exitosamente.',
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                    window.location.href = 'index.php';
+                });
+            <?php endif; ?>
+        });
+    </script>
 </body>
 </html>

@@ -1,42 +1,45 @@
 <?php
-    // Conectar a la base de datos
-    require_once '../../../config/db.php';
+// Conectar a la base de datos
+require_once '../../../config/db.php';
 
-    // Inicializar variable para almacenar los grados
-    $grados = [];
+// Inicializar variable para almacenar los grados
+$grados = [];
 
-    // Consultar grados desde la base de datos
-    $sql = "SELECT ID_grado, Nombre_grado FROM grados";
-    $stmt = $db->query($sql);
+// Consultar grados desde la base de datos
+$sql = "SELECT ID_grado, Nombre_grado FROM grados";
+$stmt = $db->query($sql);
 
-    if ($stmt) {
-        // Obtener todos los resultados como un array asociativo
-        $grados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+if ($stmt) {
+    // Obtener todos los resultados como un array asociativo
+    $grados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} else {
+    echo "Error al intentar consultar los grados.";
+    exit();
+}
+
+// Inicializar variable para mensajes
+$mensaje = '';
+
+// Procesar el formulario cuando se envíe
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Validar y obtener los datos del formulario
+    $nombre_curso = $_POST['nombre_curso'];
+    $id_grado = $_POST['id_grado'];
+
+    // Insertar el curso en la base de datos
+    $query = "INSERT INTO cursos (Nombre_curso, ID_grado) VALUES (:nombre_curso, :id_grado)";
+    $stmt = $db->prepare($query);
+    $stmt->bindParam(':nombre_curso', $nombre_curso);
+    $stmt->bindParam(':id_grado', $id_grado);
+
+    if ($stmt->execute()) {
+        // Éxito: se creó el curso
+        $mensaje = 'success';
     } else {
-        echo "Error al intentar consultar los grados.";
-        exit();
+        // Error al crear el curso
+        $mensaje = 'error';
     }
-
-    // Procesar el formulario cuando se envíe
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        // Validar y obtener los datos del formulario
-        $nombre_curso = $_POST['nombre_curso'];
-        $id_grado = $_POST['id_grado'];
-
-        // Insertar el curso en la base de datos
-        $query = "INSERT INTO cursos (Nombre_curso, ID_grado) VALUES (:nombre_curso, :id_grado)";
-        $stmt = $db->prepare($query);
-        $stmt->bindParam(':nombre_curso', $nombre_curso);
-        $stmt->bindParam(':id_grado', $id_grado);
-
-        if ($stmt->execute()) {
-            // Redirigir de vuelta a la página principal después de la creación
-            header("Location: index.php");
-            exit();
-        } else {
-            echo "Error al intentar crear el curso.";
-        }
-    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -46,6 +49,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crear Nuevo Curso</title>
     <link rel="stylesheet" type="text/css" href="../../../assets/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         /* Estilos específicos para este formulario */
         body {
@@ -127,7 +131,7 @@
         .form-group button {
             width: 100%;
             padding: 10px;
-            background-color: #66BB6A;
+            background-color: #6f42c1;
             color: #fff;
             border: none;
             border-radius: 4px;
@@ -136,7 +140,7 @@
             transition: background-color 0.3s ease;
         }
         .form-group button:hover {
-            background-color: #0056b3;
+            background-color: #5a2d91;
         }
     </style>
 </head>
@@ -160,7 +164,7 @@
                     <div class="form-group">
                         <label for="id_grado">ID Grado:</label>
                         <select id="id_grado" name="id_grado" required>
-                            <option value="">Seleccione el ID del Grado</option>
+                            <option value="">Seleccione Grado</option>
                             <?php foreach ($grados as $grado): ?>
                                 <option value="<?php echo $grado['ID_grado']; ?>"><?php echo $grado['Nombre_grado']; ?></option>
                             <?php endforeach; ?>
@@ -172,7 +176,7 @@
                 </form>
             </div>
             <div class="regresar">
-                <a href="index.php" class="button boton-centrado" id="btn-regresar">Regresar </a>
+                <a href="index.php" class="button boton-centrado" id="btn-regresar">Regresar</a>
             </div>
             <div class="salir">
                 <button id="btn_salir">Salir</button>
@@ -182,5 +186,30 @@
     <footer>
         <p>Todos los derechos reservados</p>
     </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            <?php if ($mensaje == 'success'): ?>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Curso Creado',
+                    text: 'El curso se creó correctamente.',
+                    showConfirmButton: false,
+                    timer: 1500,
+                    timerProgressBar: true,
+                    didClose: () => {
+                        window.location.href = 'index.php'; // Redirige al index después de la notificación
+                    }
+                });
+            <?php elseif ($mensaje == 'error'): ?>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Hubo un problema al crear el curso. Intenta de nuevo.',
+                    showConfirmButton: true
+                });
+            <?php endif; ?>
+        });
+    </script>
 </body>
 </html>
