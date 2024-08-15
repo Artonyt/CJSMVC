@@ -127,7 +127,7 @@ if (isset($_GET['id'])) {
         .form-group button {
             width: 100%;
             padding: 10px;
-            background-color: #66BB6A;
+            background-color: #6f42c1;
             color: #fff;
             border: none;
             border-radius: 4px;
@@ -136,7 +136,7 @@ if (isset($_GET['id'])) {
             transition: background-color 0.3s ease;
         }
         .form-group button:hover {
-            background-color: #0056b3;
+            background-color: #5a2d91;
         }
         .error-message {
             color: red;

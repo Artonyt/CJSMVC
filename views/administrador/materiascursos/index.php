@@ -3,27 +3,50 @@ require_once '../../../config/db.php';
 require_once '../../../router.php';
 
 // Procesar la eliminación si se recibe un ID válido por GET
-if (isset($_GET['delete_id'])) {
-    $delete_id = $_GET['delete_id'];
+if (isset($_GET['delete_id']) && is_numeric($_GET['delete_id'])) {
+    $delete_id = intval($_GET['delete_id']);
 
     // Verificar si el ID es válido y realizar la eliminación
     if (!empty($delete_id)) {
-        $query = "DELETE FROM materias_cursos WHERE ID_materia = :delete_id";
-        $stmt = $db->prepare($query);
-        $stmt->bindParam(':delete_id', $delete_id);
+        try {
+            $query = "DELETE FROM materias_cursos WHERE ID = :delete_id";
+            $stmt = $db->prepare($query);
+            $stmt->bindParam(':delete_id', $delete_id, PDO::PARAM_INT);
 
-        if ($stmt->execute()) {
-            // Redirigir de vuelta a la página actual después de la eliminación
-            header("Location: index.php");
-            exit();
-        } else {
-            echo "Error al intentar eliminar la materia.";
+            if ($stmt->execute()) {
+                // Mostrar mensaje de éxito con SweetAlert2
+                echo "<script>
+                    Swal.fire({
+                        title: '¡Eliminado!',
+                        text: 'La materia ha sido eliminada exitosamente.',
+                        icon: 'success'
+                    }).then(function() {
+                        window.location.href = 'index.php';
+                    });
+                </script>";
+            } else {
+                throw new Exception("Error al intentar eliminar la materia.");
+            }
+        } catch (Exception $e) {
+            // Mostrar mensaje de error con SweetAlert2
+            echo "<script>
+                Swal.fire({
+                    title: 'Error',
+                    text: '" . $e->getMessage() . "',
+                    icon: 'error'
+                }).then(function() {
+                    window.location.href = 'index.php';
+                });
+            </script>";
         }
+    } else {
+        header("Location: index.php");
+        exit();
     }
 }
 
 // Obtener y mostrar la lista de materias con cursos
-$query = "SELECT materias.ID_materia, materias.Nombre_materia, cursos.Nombre_curso 
+$query = "SELECT materias_cursos.ID, materias.Nombre_materia, cursos.Nombre_curso 
           FROM materias_cursos 
           INNER JOIN materias ON materias.ID_materia = materias_cursos.ID_materia
           INNER JOIN cursos ON cursos.ID_curso = materias_cursos.ID_curso";
@@ -99,10 +122,10 @@ $result = $db->query($query);
                                 echo "<td>" . htmlspecialchars($row['Nombre_materia']) . "</td>";
                                 echo "<td>" . htmlspecialchars($row['Nombre_curso']) . "</td>";
                                 echo "<td>";
-                                $url_update = '/dashboard/cjs/views/administrador/materiascursos/update.php?id=' . $row['ID_materia'];
+                                $url_update = '/dashboard/cjs/views/administrador/materiascursos/update.php?id=' . $row['ID'];
                                 echo "<a href='" . htmlspecialchars($url_update) . "' class='boton-modificar'><img src='../../../assets/editar.svg' alt='Editar'></a>";
-                                $url_delete = '/dashboard/cjs/views/administrador/materiascursos/index.php?delete_id=' . $row['ID_materia'];
-                                echo "<a href='#' class='boton-eliminar' data-id='" . $row['ID_materia'] . "' onclick=\"return confirmDelete(event, '" . $url_delete . "');\"><img src='../../../assets/eliminar.svg' alt='Eliminar'></a>";
+                                $url_delete = '/dashboard/cjs/views/administrador/materiascursos/index.php?delete_id=' . $row['ID'];
+                                echo "<a href='#' class='boton-eliminar' data-id='" . $row['ID'] . "' onclick=\"return confirmDelete(event, '" . $url_delete . "');\"><img src='../../../assets/eliminar.svg' alt='Eliminar'></a>";
                                 echo "</td>";
                                 echo "</tr>";
                             }

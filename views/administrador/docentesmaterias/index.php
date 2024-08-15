@@ -9,7 +9,7 @@
 
         // Verificar si el ID es válido y realizar la eliminación
         if (!empty($delete_id)) {
-            $query = "DELETE FROM usuarios WHERE ID_usuario = :delete_id AND ID_rol = 'Administrador'";
+            $query = "DELETE FROM docentes_materias WHERE ID_docente_materia = :delete_id";
             $stmt = $db->prepare($query);
             $stmt->bindParam(':delete_id', $delete_id);
 
@@ -18,14 +18,26 @@
                 header("Location: index.php");
                 exit();
             } else {
-                echo "Error al intentar eliminar el administrador.";
+                echo "Error al intentar eliminar la asignación.";
             }
         }
     }
 
-    // Obtener y mostrar la lista de administradores (asumiendo que el ID del rol de administrador es 'Administrador')
-    $query = "SELECT * FROM usuarios WHERE ID_rol = 'Administrador'";
+    // Obtener y mostrar la lista de asignaciones
+    $query = "SELECT dm.ID_docente_materia, m.Nombre_materia, CONCAT(u.Nombres, ' ', u.Apellidos) AS nombre_docente
+              FROM docentes_materias dm
+              JOIN materias m ON dm.ID_materia = m.ID_materia
+              JOIN usuarios u ON dm.ID_docente = u.ID_usuario
+              WHERE u.ID_rol = 'Docente'";
     $result = $db->query($query);
+
+    // Obtener la lista de materias
+    $queryMaterias = "SELECT * FROM materias";
+    $resultMaterias = $db->query($queryMaterias);
+
+    // Obtener la lista de docentes
+    $queryDocentes = "SELECT ID_usuario, CONCAT(Nombres, ' ', Apellidos) AS nombre_completo FROM usuarios WHERE ID_rol = 'Docente'";
+    $resultDocentes = $db->query($queryDocentes);
 ?>
 
 <!DOCTYPE html>
@@ -33,7 +45,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Administrativo - Gestión de Administradores</title>
+    <title>Panel Administrativo - Asignación de Docentes a Materias</title>
     <link rel="stylesheet" type="text/css" href="../../../assets/styles.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
@@ -51,7 +63,7 @@
             <img src="../../../assets/Logo.png" alt="Logo de la empresa" class="logo">
         </div>
         <div class="title">
-            <h1>Gestión de Administradores</h1>
+            <h1>Asignación de Docentes a Materias</h1>
         </div>
         <div class="datetime">
             <?php
@@ -71,26 +83,21 @@
     </header>
     <section class="admin">
         <div class="subtitulo-admin">
-            <h2>Administradores</h2>
+            <h2>Asignaciones de Docentes</h2>
         </div>
-        <div class="crear-administrador">
-            <a href="/dashboard/cjs/views/administrador/administradores/create.php" class="button boton-centrado">Crear Nuevo Administrador</a>
+        <div class="crear-asignacion">
+            <a href="/dashboard/cjs/views/administrador/docentesmaterias/create.php" class="button boton-centrado">Asignar Docente</a>
         </div>
-        <section class="administradores" id="section-administradores">
-            <div class="descripcion-administrador">
-                <p>Listado y Gestión de Administradores</p>
+        <section class="asignaciones" id="section-asignaciones">
+            <div class="descripcion-ambiente">
+                <p>Listado y Gestión de Asignaciones</p>
             </div>
-            <div class="tabla-administradores tabla-scroll">
-                <table class="table table-striped table-dark table_id" border="1" id="tabla-administradores">
+            <div class="tabla-asignaciones tabla-scroll">
+                <table class="table table-striped table-dark table_id" border="1" id="tabla-asignaciones">
                     <thead>
                         <tr>
-                            <th>Nombres</th>
-                            <th>Apellidos</th>
-                            <th>Identificación</th>
-                            <th>Contraseña</th>
-                            <th>Dirección</th>
-                            <th>Teléfono</th>
-                            <th>Correo Electrónico</th>
+                            <th>Materia</th>
+                            <th>Docente</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -99,23 +106,18 @@
                         if ($result->rowCount() > 0) {
                             while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
                                 echo "<tr>";
-                                echo "<td>" . htmlspecialchars($row['Nombres']) . "</td>";
-                                echo "<td>" . htmlspecialchars($row['Apellidos']) . "</td>";
-                                echo "<td>" . htmlspecialchars($row['Identificacion']) . "</td>";
-                                echo "<td>" . htmlspecialchars($row['contraseña']) . "</td>";
-                                echo "<td>" . htmlspecialchars($row['Direccion']) . "</td>";
-                                echo "<td>" . htmlspecialchars($row['Telefono']) . "</td>";
-                                echo "<td>" . htmlspecialchars($row['Correo_electronico']) . "</td>";
+                                echo "<td>" . htmlspecialchars($row['Nombre_materia']) . "</td>";
+                                echo "<td>" . htmlspecialchars($row['nombre_docente']) . "</td>";
                                 echo "<td>";
-                                $url_update = '/dashboard/cjs/views/administrador/administradores/update.php?id=' . $row['ID_usuario'];
-                                echo "<a href='" . htmlspecialchars($url_update) . "' class='boton-modificar'><img src='../../../assets/editar.svg' alt='Editar'></a>";
-                                $url_delete = htmlspecialchars($_SERVER["PHP_SELF"]) . "?delete_id=" . $row['ID_usuario'];
-                                echo "<a href='#' class='boton-eliminar' onclick=\"confirmarEliminar('" . $row['ID_usuario'] . "')\"><img src='../../../assets/eliminar.svg' alt='Eliminar'></a>";
+                                $url_update = '/dashboard/cjs/views/administrador/docentesmaterias/update.php?id=' . $row['ID_docente_materia'];
+                                echo "<a href='" . htmlspecialchars($url_update) . "' class='boton-modificar'><img src='../../../assets/editar.svg' alt='Actualizar'></a>";
+                                $url_delete = htmlspecialchars($_SERVER["PHP_SELF"]) . "?delete_id=" . $row['ID_docente_materia'];
+                                echo "<a href='#' class='boton-eliminar' onclick=\"confirmarEliminar('" . $row['ID_docente_materia'] . "')\"><img src='../../../assets/eliminar.svg' alt='Eliminar'></a>";
                                 echo "</td>";
                                 echo "</tr>";
                             }
                         } else {
-                            echo "<tr><td colspan='8'>No hay administradores registrados</td></tr>";
+                            echo "<tr><td colspan='3'>No hay asignaciones registradas</td></tr>";
                         }
                         ?>
                     </tbody>
@@ -131,7 +133,7 @@
     </section>
     <script>
         $(document).ready(function() {
-            var table = $('#tabla-administradores').DataTable({
+            var table = $('#tabla-asignaciones').DataTable({
                 "language": {
                     "decimal": "",
                     "emptyTable": "No hay datos disponibles en la tabla",
@@ -168,7 +170,7 @@
         function confirmarEliminar(id) {
             Swal.fire({
                 title: '¿Estás seguro?',
-                text: "Esta acción eliminará al administrador.",
+                text: "Esta acción eliminará la asignación.",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',

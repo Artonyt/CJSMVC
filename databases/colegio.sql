@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 14-08-2024 a las 21:08:28
+-- Tiempo de generación: 15-08-2024 a las 20:03:10
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -156,8 +156,26 @@ CREATE TABLE `estudiantes` (
 --
 
 INSERT INTO `estudiantes` (`ID_estudiante`, `Nombres`, `Apellidos`, `Identificacion`, `Fecha_nacimiento`, `Genero`, `Direccion`, `Telefono`, `Correo_electronico`, `ID_curso`) VALUES
-(1, 'Ana', 'Rodríguez', '654321987', '2005-03-15', 'Femenino', 'Calle 456', '9876543210', 'ana.rodriguez@example.com', 1),
-(2, 'Carlos', 'López', '321654987', '2006-07-20', 'Masculino', 'Av. Secundaria', '6543210987', 'carlos.lopez@example.com', 2);
+(1, 'Juan', 'Pérez', '1234567890', '2000-01-15', 'Masculino', 'Calle Falsa 123', '3001234567', 'juan.perez@example.com', 1),
+(2, 'Ana', 'Gómez', '2345678901', '1999-02-20', 'Femenino', 'Avenida Siempre Viva 456', '3007654321', 'ana.gomez@example.com', 3),
+(3, 'Carlos', 'Martínez', '3456789012', '2001-03-30', 'Masculino', 'Calle Luna 789', '3001122334', 'carlos.martinez@example.com', 3),
+(4, 'Maria', 'Rodríguez', '4567890123', '2002-04-25', 'Femenino', 'Calle Sol 321', '3005566778', 'maria.rodriguez@example.com', 1),
+(5, 'Luis', 'Hernández', '5678901234', '2000-05-12', 'Masculino', 'Carrera 7 654', '3003344556', 'luis.hernandez@example.com', 2),
+(6, 'Sofia', 'García', '6789012345', '1999-06-22', 'Femenino', 'Calle 45 987', '3004455667', 'sofia.garcia@example.com', 3),
+(7, 'Miguel', 'Lopez', '7890123456', '2001-07-10', 'Masculino', 'Calle 6 543', '3002233445', 'miguel.lopez@example.com', 1),
+(8, 'Laura', 'Martínez', '8901234567', '2002-08-05', 'Femenino', 'Calle 2 876', '3003344555', 'laura.martinez@example.com', 2),
+(9, 'Pedro', 'Vázquez', '9012345678', '2000-09-15', 'Masculino', 'Carrera 8 210', '3005566779', 'pedro.vazquez@example.com', 3),
+(10, 'Claudia', 'Pérez', '0123456789', '1999-10-25', 'Femenino', 'Calle 9 321', '3006677889', 'claudia.perez@example.com', 1),
+(11, 'Andrés', 'Jiménez', '1234567891', '2001-11-30', 'Masculino', 'Calle 10 654', '3007788990', 'andres.jimenez@example.com', 2),
+(13, 'Felipe', 'Castro', '3456789013', '1999-01-10', 'Masculino', 'Calle 12 543', '3009900112', 'felipe.castro@example.com', 1),
+(14, 'Isabella', 'Torres', '4567890124', '2001-02-20', 'Femenino', 'Calle 13 876', '3010011223', 'isabella.torres@example.com', 2),
+(15, 'Sebastián', 'Núñez', '5678901235', '2000-03-30', 'Masculino', 'Calle 14 210', '3011122334', 'sebastian.nunez@example.com', 3),
+(16, 'Camila', 'Ramos', '6789012346', '1999-04-25', 'Femenino', 'Calle 15 321', '3012233445', 'camila.ramos@example.com', 19),
+(17, 'Santiago', 'Gómez', '7890123457', '2001-05-12', 'Masculino', 'Calle 16 654', '3013344556', 'santiago.gomez@example.com', 2),
+(18, 'Gabriela', 'Hernández', '8901234568', '2000-06-22', 'Femenino', 'Calle 17 987', '3014455667', 'gabriela.hernandez@example.com', 3),
+(19, 'Daniel', 'Ortiz', '9012345679', '1999-07-10', 'Masculino', 'Calle 18 543', '3015566778', 'daniel.ortiz@example.com', 1),
+(20, 'Natalia', 'Jiménez', '0123456780', '2001-08-05', 'Femenino', 'Calle 19 876', '3016677889', 'natalia.jimenez@example.com', 2),
+(29, 'carlos', 'ortiz', '10000687165', '2022-02-17', 'Masculino', 'casa', '3003371492', '231312@gmail.com', 1);
 
 -- --------------------------------------------------------
 
@@ -226,8 +244,7 @@ INSERT INTO `materias` (`ID_materia`, `Nombre_materia`, `ID_asignatura`) VALUES
 (20, 'Política', 2),
 (21, 'Economía', 2),
 (22, 'Álgebra', 7),
-(23, 'Danzas', 5),
-(25, 'Hatacuandoinono', 6);
+(23, 'Danzas', 5);
 
 -- --------------------------------------------------------
 
@@ -236,10 +253,17 @@ INSERT INTO `materias` (`ID_materia`, `Nombre_materia`, `ID_asignatura`) VALUES
 --
 
 CREATE TABLE `materias_cursos` (
-  `ID` int(11) NOT NULL,
   `ID_materia` int(11) NOT NULL,
-  `ID_curso` int(11) NOT NULL
+  `ID_curso` int(11) NOT NULL,
+  `ID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+
+--
+-- Volcado de datos para la tabla `materias_cursos`
+--
+
+INSERT INTO `materias_cursos` (`ID_materia`, `ID_curso`, `ID`) VALUES
+(2, 19, 7);
 
 -- --------------------------------------------------------
 
@@ -290,10 +314,7 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`ID_usuario`, `Nombres`, `Apellidos`, `Identificacion`, `contraseña`, `Direccion`, `Telefono`, `Correo_electronico`, `ID_rol`) VALUES
-(1, 'Juan', 'Pérez', '123456789', '$2y$10$naPVTTO45MSjj', 'Calle 123', '1234567890', 'juan.perez@example.com', 'Administrador'),
-(6, 'Luis', 'Aguilera', '52800312', '$2y$10$KI4TYUWgkZddb', 'cra 8 # 35 b 36 sur', '4214124', 'vaa@gmail.com', 'Docente'),
-(7, 'Pedro', 'Pacheco', '31212', '$2y$10$VD0oVn399h3.t', '3123123', 'das', 'vadas@gmail.com', 'Docente'),
-(8, 'Julian', 'Gomez', '10000687166', '$2y$10$51/1q/CTrWesu', 'das', '3003371492', '231312@gmail.com', 'Docente');
+(1, 'Juan', 'Pérez', '123456789', '$2y$10$naPVTTO45MSjj', 'Calle 123', '1234567890', 'juan.perez@example.com', 'Administrador');
 
 --
 -- Índices para tablas volcadas
@@ -355,8 +376,7 @@ ALTER TABLE `materias`
 --
 ALTER TABLE `materias_cursos`
   ADD PRIMARY KEY (`ID`),
-  ADD KEY `ID_materia` (`ID_materia`,`ID_curso`),
-  ADD KEY `ID_curso` (`ID_curso`);
+  ADD KEY `ID_materia` (`ID_materia`,`ID_curso`);
 
 --
 -- Indices de la tabla `notas`
@@ -389,7 +409,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `asignaturas`
 --
 ALTER TABLE `asignaturas`
-  MODIFY `ID_asignatura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `ID_asignatura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT de la tabla `asistencia`
@@ -401,7 +421,7 @@ ALTER TABLE `asistencia`
 -- AUTO_INCREMENT de la tabla `cursos`
 --
 ALTER TABLE `cursos`
-  MODIFY `ID_curso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `ID_curso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT de la tabla `docentes_materias`
@@ -413,7 +433,7 @@ ALTER TABLE `docentes_materias`
 -- AUTO_INCREMENT de la tabla `estudiantes`
 --
 ALTER TABLE `estudiantes`
-  MODIFY `ID_estudiante` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `ID_estudiante` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT de la tabla `grados`
@@ -425,13 +445,13 @@ ALTER TABLE `grados`
 -- AUTO_INCREMENT de la tabla `materias`
 --
 ALTER TABLE `materias`
-  MODIFY `ID_materia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `ID_materia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT de la tabla `materias_cursos`
 --
 ALTER TABLE `materias_cursos`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `notas`
@@ -449,7 +469,7 @@ ALTER TABLE `tareas`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `ID_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `ID_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- Restricciones para tablas volcadas
@@ -476,11 +496,29 @@ ALTER TABLE `docentes_materias`
   ADD CONSTRAINT `docentes_materias_ibfk_2` FOREIGN KEY (`ID_materia`) REFERENCES `materias` (`ID_materia`) ON DELETE CASCADE;
 
 --
+-- Filtros para la tabla `estudiantes`
+--
+ALTER TABLE `estudiantes`
+  ADD CONSTRAINT `estudiantes_ibfk_1` FOREIGN KEY (`ID_curso`) REFERENCES `cursos` (`ID_curso`);
+
+--
+-- Filtros para la tabla `materias`
+--
+ALTER TABLE `materias`
+  ADD CONSTRAINT `materias_ibfk_1` FOREIGN KEY (`ID_asignatura`) REFERENCES `asignaturas` (`ID_asignatura`);
+
+--
 -- Filtros para la tabla `materias_cursos`
 --
 ALTER TABLE `materias_cursos`
-  ADD CONSTRAINT `materias_cursos_ibfk_1` FOREIGN KEY (`ID_materia`) REFERENCES `materias` (`ID_materia`),
-  ADD CONSTRAINT `materias_cursos_ibfk_2` FOREIGN KEY (`ID_curso`) REFERENCES `cursos` (`ID_curso`);
+  ADD CONSTRAINT `materias_cursos_ibfk_1` FOREIGN KEY (`ID_materia`) REFERENCES `materias` (`ID_materia`);
+
+--
+-- Filtros para la tabla `tareas`
+--
+ALTER TABLE `tareas`
+  ADD CONSTRAINT `tareas_ibfk_1` FOREIGN KEY (`ID_tarea`) REFERENCES `notas` (`ID_tarea`),
+  ADD CONSTRAINT `tareas_ibfk_2` FOREIGN KEY (`ID_materia`) REFERENCES `materias` (`ID_materia`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
