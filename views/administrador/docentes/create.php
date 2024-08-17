@@ -22,23 +22,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $mensaje = 'error'; // Mensaje de error si faltan campos
     } else {
         try {
-            // Preparar la consulta SQL para insertar un nuevo usuario
-            $query = "INSERT INTO usuarios (Nombres, Apellidos, Identificacion, Contraseña, Direccion, Telefono, Correo_electronico, ID_rol) 
-                      VALUES (:nombres, :apellidos, :identificacion, :contrasena, :direccion, :telefono, :correo_electronico, 'Docente')";
+            // Verificar si la identificación, el teléfono o el correo electrónico ya existen
+            $query = "SELECT COUNT(*) FROM usuarios WHERE Identificacion = ? OR Telefono = ? OR Correo_electronico = ?";
             $stmt = $db->prepare($query);
-            $stmt->bindParam(':nombres', $nombres);
-            $stmt->bindParam(':apellidos', $apellidos);
-            $stmt->bindParam(':identificacion', $identificacion);
-            $stmt->bindParam(':contrasena', $contraseña);
-            $stmt->bindParam(':direccion', $direccion);
-            $stmt->bindParam(':telefono', $telefono);
-            $stmt->bindParam(':correo_electronico', $correo_electronico);
-
-            // Ejecutar la consulta
-            if ($stmt->execute()) {
-                $mensaje = 'success'; // Mensaje de éxito si se crea el usuario correctamente
+            $stmt->bindParam(1, $identificacion);
+            $stmt->bindParam(2, $telefono);
+            $stmt->bindParam(3, $correo_electronico);
+            $stmt->execute();
+            
+            if ($stmt->fetchColumn() > 0) {
+                $mensaje = 'exists'; // Mensaje de error si ya existen
             } else {
-                $mensaje = 'error'; // Mensaje de error si falla la creación
+                // Encriptar la contraseña
+                $contraseñaHash = password_hash($contraseña, PASSWORD_BCRYPT);
+
+                // Preparar la consulta SQL para insertar un nuevo usuario
+                $query = "INSERT INTO usuarios (Nombres, Apellidos, Identificacion, Contraseña, Direccion, Telefono, Correo_electronico, ID_rol) 
+                          VALUES (:nombres, :apellidos, :identificacion, :contrasena, :direccion, :telefono, :correo_electronico, 'Docente')";
+                $stmt = $db->prepare($query);
+                $stmt->bindParam(':nombres', $nombres);
+                $stmt->bindParam(':apellidos', $apellidos);
+                $stmt->bindParam(':identificacion', $identificacion);
+                $stmt->bindParam(':contrasena', $contraseñaHash);
+                $stmt->bindParam(':direccion', $direccion);
+                $stmt->bindParam(':telefono', $telefono);
+                $stmt->bindParam(':correo_electronico', $correo_electronico);
+
+                // Ejecutar la consulta
+                if ($stmt->execute()) {
+                    $mensaje = 'success'; // Mensaje de éxito si se crea el usuario correctamente
+                } else {
+                    $mensaje = 'error'; // Mensaje de error si falla la creación
+                }
             }
         } catch(PDOException $e) {
             $mensaje = 'error'; // Mensaje de error en caso de excepción
@@ -197,6 +212,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     icon: 'error',
                     title: 'Error',
                     text: 'Hubo un problema al crear el usuario. Intenta de nuevo.',
+                    showConfirmButton: true
+                });
+            <?php elseif ($mensaje == 'exists'): ?>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'La identificación, el teléfono o el correo electrónico ya están registrados.',
                     showConfirmButton: true
                 });
             <?php endif; ?>

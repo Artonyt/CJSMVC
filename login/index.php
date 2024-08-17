@@ -1,48 +1,49 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="utf-8">
-  <title>Iniciar Sesión</title>
-  <link rel="stylesheet" href="../assets/master.css">
-</head>
-<body>
+<?php
+//Import PHPMailer classes into the global namespace
+//These must be at the top of your script, not inside a function
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
 
-<div class="login-box">
-  <img src="../assets/logo.png" class="avatar" alt="Avatar Image">
-  <h1>Iniciar Sesión</h1>
+//Load Composer's autoloader
+require 'PHPMailer/Exception.php';
+require 'PHPMailer/PHPMailer.php';
+require 'PHPMailer/SMTP.php';
 
-  <?php
-  session_start();
+//Create an instance; passing `true` enables exceptions
+$mail = new PHPMailer(true);
 
-  // Verificar si hay un mensaje de error en la sesión
-  if (isset($_SESSION["error"])) {
-      $error = $_SESSION["error"];
-      // Mostrar el mensaje de error
-      echo '<p style="color: red;">' . $error . '</p>';
-      // Limpiar la sesión del mensaje de error para evitar que se muestre de nuevo después de una recarga de la página
-      unset($_SESSION["error"]);
-  }
-  ?> 
+try {
+    //Server settings
+    $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
+    $mail->isSMTP();                                            //Send using SMTP
+    $mail->Host       = 'smtp.example.com';                     //Set the SMTP server to send through
+    $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
+    $mail->Username   = 'user@example.com';                     //SMTP username
+    $mail->Password   = 'secret';                               //SMTP password
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
+    $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 
-  <form id="login-form" action="validar.php" method="post">
-    <div>
-      <label for="usuario">Documento</label>
-      <input type="text" id="usuario" name="usuario" placeholder="Identificación">
-      <div id="usuario-error" class="error-message"></div>
-    </div>
+    //Recipients
+    $mail->setFrom('from@example.com', 'Mailer');
+    $mail->addAddress('joe@example.net', 'Joe User');     //Add a recipient
+    $mail->addAddress('ellen@example.com');               //Name is optional
+    $mail->addReplyTo('info@example.com', 'Information');
+    $mail->addCC('cc@example.com');
+    $mail->addBCC('bcc@example.com');
 
-    <div>
-      <label for="password">Contraseña</label>
-      <input type="password" id="password" name="password" placeholder="Contraseña">
-      <div id="password-error" class="error-message"></div>
-    </div>
+    //Attachments
+    $mail->addAttachment('/var/tmp/file.tar.gz');         //Add attachments
+    $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    //Optional name
 
-    <input type="submit" value="Ingresar">
-    <a href="recuperar_contraseña.php">¿Olvidó su contraseña?</a><br>
-  </form>
-</div>
+    //Content
+    $mail->isHTML(true);                                  //Set email format to HTML
+    $mail->Subject = 'Here is the subject';
+    $mail->Body    = 'This is the HTML message body <b>in bold!</b>';
+    $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
 
-<script src="../assets/Validacion.js"></script>
-
-</body>
-</html>
+    $mail->send();
+    echo 'Message has been sent';
+} catch (Exception $e) {
+    echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+}

@@ -21,13 +21,16 @@ if (isset($_GET['id'])) {
         $telefono = $_POST['telefono'];
         $correo = $_POST['correo_electronico']; // Asegúrate de que coincida con el nombre en el formulario
 
+        // Encriptar la contraseña
+        $contraseña_encriptada = password_hash($contraseña, PASSWORD_BCRYPT);
+
         // Actualizar los datos en la base de datos
         $query = "UPDATE usuarios SET Nombres = :nombres, Apellidos = :apellidos, Identificacion = :identificacion, contraseña = :contrasena, Direccion = :direccion, Telefono = :telefono, Correo_electronico = :correo WHERE ID_usuario = :id AND ID_rol = 'Docente'";
         $stmt = $db->prepare($query);
         $stmt->bindParam(':nombres', $nombres);
         $stmt->bindParam(':apellidos', $apellidos);
         $stmt->bindParam(':identificacion', $identificacion);
-        $stmt->bindParam(':contrasena', $contraseña); // Cambiado a contrasena según la columna en tu base de datos
+        $stmt->bindParam(':contrasena', $contraseña_encriptada); // Cambiado a contrasena según la columna en tu base de datos
         $stmt->bindParam(':direccion', $direccion);
         $stmt->bindParam(':telefono', $telefono);
         $stmt->bindParam(':correo', $correo);
@@ -191,63 +194,49 @@ if (isset($_GET['id'])) {
                 </div>
                 <div class="form-group">
                     <label for="contraseña">Contraseña:</label>
-                    <input type="password" name="contraseña" id="contraseña" value="<?php echo htmlspecialchars($docente['contraseña']); ?>" required>
+                    <input type="password" name="contraseña" id="contraseña" value="" required>
                 </div>
                 <div class="form-group">
                     <label for="direccion">Dirección:</label>
-                    <input type="text" name="direccion" id="direccion" value="<?php echo htmlspecialchars($docente['Direccion']); ?>">
+                    <input type="text" name="direccion" id="direccion" value="<?php echo htmlspecialchars($docente['Direccion']); ?>" required>
                 </div>
                 <div class="form-group">
                     <label for="telefono">Teléfono:</label>
-                    <input type="text" name="telefono" id="telefono" value="<?php echo htmlspecialchars($docente['Telefono']); ?>">
+                    <input type="text" name="telefono" id="telefono" value="<?php echo htmlspecialchars($docente['Telefono']); ?>" required>
                 </div>
                 <div class="form-group">
-                    <label for="correo_electronico">Correo Electrónico:</label>
+                    <label for="correo_electronico">Correo electrónico:</label>
                     <input type="email" name="correo_electronico" id="correo_electronico" value="<?php echo htmlspecialchars($docente['Correo_electronico']); ?>" required>
                 </div>
-                <div class="form-actions">
-                    <button type="submit" class="button">Actualizar Docente</button>
+                <div class="form-group">
+                    <button type="submit">Actualizar</button>
                 </div>
             </form>
         </section>
-        <div class="regresar">
-            <a href="index.php" class="button boton-centrado" id="btn-regresar">Regresar</a>
-        </div>
-        <div class="salir">
-            <button id="btn_salir">Salir</button>
-        </div>
     </section>
-    <footer>
-        <p>Todos los derechos reservados</p>
-    </footer>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const urlParams = new URLSearchParams(window.location.search);
-            
-            if (urlParams.has('success')) {
-                Swal.fire({
-                    icon: 'success',
-                    title: '¡Actualización exitosa!',
-                    text: 'El docente ha sido actualizado correctamente.',
-                    timer: 3000, // 3 segundos
-                    timerProgressBar: true,
-                    willClose: () => {
-                        window.location.href = 'index.php';
-                    }
-                });
-            }
+        // Mostrar notificaciones SweetAlert2 según parámetros en URL
+        <?php if (isset($_GET['success']) && $_GET['success'] == 'true'): ?>
+            Swal.fire({
+                title: 'Éxito',
+                text: 'Docente actualizado correctamente.',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = 'index.php'; // Redirigir a la página de índice
+                }
+            });
+        <?php endif; ?>
 
-            if (urlParams.has('error')) {
-                Swal.fire({
-                    icon: 'error',
-                    title: '¡Error al actualizar el docente!',
-                    text: 'Por favor, inténtelo nuevamente.',
-                    timer: 3000, // 3 segundos
-                    timerProgressBar: true
-                });
-            }
-        });
+        <?php if (isset($_GET['error']) && $_GET['error'] == 'true'): ?>
+            Swal.fire({
+                title: 'Error',
+                text: 'No se pudo actualizar el docente. Intente nuevamente.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        <?php endif; ?>
     </script>
 </body>
 </html>

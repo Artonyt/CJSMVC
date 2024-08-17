@@ -86,7 +86,7 @@
             <h2>Asignaciones de Docentes</h2>
         </div>
         <div class="crear-asignacion">
-            <a href="/dashboard/cjs/views/administrador/docentesmaterias/create.php" class="button boton-centrado">Asignar Docente</a>
+            <a href="/dashboard/cjs/views/administrador/cursosdocentes/create.php" class="button boton-centrado">Asignar Docente</a>
         </div>
         <section class="asignaciones" id="section-asignaciones">
             <div class="descripcion-ambiente">

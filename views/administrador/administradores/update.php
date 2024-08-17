@@ -23,12 +23,15 @@
 
         // Validar que los campos no estén vacíos
         if (!empty($nombres) && !empty($apellidos) && !empty($identificacion) && !empty($contrasena) && !empty($direccion) && !empty($telefono) && !empty($correo)) {
+            // Encriptar la contraseña
+            $hashedPassword = password_hash($contrasena, PASSWORD_BCRYPT);
+
             $query = "UPDATE usuarios SET Nombres = :nombres, Apellidos = :apellidos, Identificacion = :identificacion, contraseña = :contrasena, Direccion = :direccion, Telefono = :telefono, Correo_electronico = :correo WHERE ID_usuario = :id AND ID_rol = 'Administrador'";
             $stmt = $db->prepare($query);
             $stmt->bindParam(':nombres', $nombres);
             $stmt->bindParam(':apellidos', $apellidos);
             $stmt->bindParam(':identificacion', $identificacion);
-            $stmt->bindParam(':contrasena', $contrasena);
+            $stmt->bindParam(':contrasena', $hashedPassword);
             $stmt->bindParam(':direccion', $direccion);
             $stmt->bindParam(':telefono', $telefono);
             $stmt->bindParam(':correo', $correo);
@@ -114,7 +117,6 @@
             background-color: #5a2d91;
         }
 
-
     </style>
 </head>
 <body>
@@ -177,8 +179,8 @@
                 </div>
             </form>
             <div class="regresar">
-            <a href="index.php" class="button boton-centrado">Regresar</a>
-        </div>
+                <a href="index.php" class="button boton-centrado">Regresar</a>
+            </div>
         </div>
     </section>
     <footer>

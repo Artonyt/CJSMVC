@@ -1,41 +1,44 @@
 <?php
-    // Conectar a la base de datos
-    require_once '../../../config/db.php';
-    require_once '../../../router.php';
+// Conectar a la base de datos
+require_once '../../../config/db.php';
+require_once '../../../router.php';
 
-    // Procesar el formulario de creación de nuevo administrador
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $nombres = $_POST['nombres'];
-        $apellidos = $_POST['apellidos'];
-        $identificacion = $_POST['identificacion'];
-        $contrasena = $_POST['contrasena'];
-        $direccion = $_POST['direccion'];
-        $telefono = $_POST['telefono'];
-        $correo = $_POST['correo'];
+// Procesar el formulario de creación de nuevo administrador
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $nombres = $_POST['nombres'];
+    $apellidos = $_POST['apellidos'];
+    $identificacion = $_POST['identificacion'];
+    $contrasena = $_POST['contrasena'];
+    $direccion = $_POST['direccion'];
+    $telefono = $_POST['telefono'];
+    $correo = $_POST['correo'];
 
-        // Validar que los campos no estén vacíos
-        if (!empty($nombres) && !empty($apellidos) && !empty($identificacion) && !empty($contrasena) && !empty($direccion) && !empty($telefono) && !empty($correo)) {
-            $query = "INSERT INTO usuarios (Nombres, Apellidos, Identificacion, contraseña, Direccion, Telefono, Correo_electronico, ID_rol) VALUES (:nombres, :apellidos, :identificacion, :contrasena, :direccion, :telefono, :correo, 'Administrador')";
-            $stmt = $db->prepare($query);
-            $stmt->bindParam(':nombres', $nombres);
-            $stmt->bindParam(':apellidos', $apellidos);
-            $stmt->bindParam(':identificacion', $identificacion);
-            $stmt->bindParam(':contrasena', $contrasena);
-            $stmt->bindParam(':direccion', $direccion);
-            $stmt->bindParam(':telefono', $telefono);
-            $stmt->bindParam(':correo', $correo);
+    // Validar que los campos no estén vacíos
+    if (!empty($nombres) && !empty($apellidos) && !empty($identificacion) && !empty($contrasena) && !empty($direccion) && !empty($telefono) && !empty($correo)) {
+        // Encriptar la contraseña
+        $contrasena_encriptada = password_hash($contrasena, PASSWORD_BCRYPT);
 
-            if ($stmt->execute()) {
-                // Redirigir después de la creación
-                header("Location: index.php");
-                exit();
-            } else {
-                echo "Error al intentar crear el administrador.";
-            }
+        $query = "INSERT INTO usuarios (Nombres, Apellidos, Identificacion, contraseña, Direccion, Telefono, Correo_electronico, ID_rol) VALUES (:nombres, :apellidos, :identificacion, :contrasena, :direccion, :telefono, :correo, 'Administrador')";
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':nombres', $nombres);
+        $stmt->bindParam(':apellidos', $apellidos);
+        $stmt->bindParam(':identificacion', $identificacion);
+        $stmt->bindParam(':contrasena', $contrasena_encriptada); // Usar la contraseña encriptada
+        $stmt->bindParam(':direccion', $direccion);
+        $stmt->bindParam(':telefono', $telefono);
+        $stmt->bindParam(':correo', $correo);
+
+        if ($stmt->execute()) {
+            // Redirigir después de la creación
+            header("Location: index.php");
+            exit();
         } else {
-            echo "Todos los campos son obligatorios.";
+            echo "Error al intentar crear el administrador.";
         }
+    } else {
+        echo "Todos los campos son obligatorios.";
     }
+}
 ?>
 
 <!DOCTYPE html>
@@ -155,8 +158,8 @@
                 </div>
             </form>
             <div class="regresar">
-            <a href="index.php" class="button boton-centrado">Regresar</a>
-        </div>
+                <a href="index.php" class="button boton-centrado">Regresar</a>
+            </div>
         </div>
     </section>
     <footer>

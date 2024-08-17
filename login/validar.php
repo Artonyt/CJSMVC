@@ -23,8 +23,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($resultadoUsuario->num_rows == 1) {
         // Usuario encontrado
         $usuarioData = $resultadoUsuario->fetch_assoc();
+        
+        // Mostrar información para depuración (elimina después de la depuración)
+        echo "Contraseña ingresada: " . htmlspecialchars($password) . "<br>";
+        echo "Contraseña en la BD (hash): " . htmlspecialchars($usuarioData["contraseña"]) . "<br>";
+
         // Verificar la contraseña
         if (password_verify($password, $usuarioData["contraseña"])) {
+            echo "¡Contraseña correcta!<br>";
             // Contraseña correcta, iniciar sesión
             $_SESSION["usuario"] = $usuarioData["Nombres"]; // Almacenar el nombre del usuario en sesión
             $_SESSION["ID_rol"] = $usuarioData["ID_rol"]; // Almacenar el ID del rol en sesión
@@ -50,7 +56,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     $_SESSION["error"] = $error;
-    header("Location: index.php");
+    header("Location: login.php");
     exit();
 
     $stmt->close();

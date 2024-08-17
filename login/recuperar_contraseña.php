@@ -176,32 +176,47 @@
     </div>
 
     <script>
-        function sendEmail() {
-            var email = document.getElementById("email").value;
-            var message = document.getElementById("message");
+    function sendEmail() {
+    console.log("Botón de enviar clickeado"); // Agrega esto para depuración
+    var email = document.getElementById("email").value;
+    var message = document.getElementById("message");
 
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "send_password.php", true);
-            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    if (!validateEmail(email)) {
+        message.className = "message error";
+        message.innerText = "Por favor, introduce un correo electrónico válido.";
+        message.style.display = "block";
+        return;
+    }
 
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4) {
-                    if (xhr.status === 200) {
-                        var response = JSON.parse(xhr.responseText);
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "send_password.php", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-                        if (response.success) {
-                            message.className = "message success";
-                        } else {
-                            message.className = "message error";
-                        }
-                        message.innerText = response.message;
-                        message.style.display = "block";
-                    }
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+
+                if (response.success) {
+                    message.className = "message success";
+                } else {
+                    message.className = "message error";
                 }
-            };
-
-            xhr.send("email=" + encodeURIComponent(email));
+                message.innerText = response.message;
+                message.style.display = "block";
+            }
         }
-    </script>
+    };
+
+    xhr.send("email=" + encodeURIComponent(email));
+}
+
+function validateEmail(email) {
+    var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+}
+
+</script>
+
 </body>
 </html>
