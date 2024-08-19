@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 15-08-2024 a las 20:03:10
+-- Tiempo de generación: 19-08-2024 a las 05:36:30
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -174,8 +174,7 @@ INSERT INTO `estudiantes` (`ID_estudiante`, `Nombres`, `Apellidos`, `Identificac
 (17, 'Santiago', 'Gómez', '7890123457', '2001-05-12', 'Masculino', 'Calle 16 654', '3013344556', 'santiago.gomez@example.com', 2),
 (18, 'Gabriela', 'Hernández', '8901234568', '2000-06-22', 'Femenino', 'Calle 17 987', '3014455667', 'gabriela.hernandez@example.com', 3),
 (19, 'Daniel', 'Ortiz', '9012345679', '1999-07-10', 'Masculino', 'Calle 18 543', '3015566778', 'daniel.ortiz@example.com', 1),
-(20, 'Natalia', 'Jiménez', '0123456780', '2001-08-05', 'Femenino', 'Calle 19 876', '3016677889', 'natalia.jimenez@example.com', 2),
-(29, 'carlos', 'ortiz', '10000687165', '2022-02-17', 'Masculino', 'casa', '3003371492', '231312@gmail.com', 1);
+(20, 'Natalia', 'Jiménez', '0123456780', '2001-08-05', 'Femenino', 'Calle 19 876', '3016677889', 'natalia.jimenez@example.com', 2);
 
 -- --------------------------------------------------------
 
@@ -302,7 +301,7 @@ CREATE TABLE `usuarios` (
   `Nombres` varchar(50) DEFAULT NULL,
   `Apellidos` varchar(50) DEFAULT NULL,
   `Identificacion` varchar(20) DEFAULT NULL,
-  `contraseña` varchar(20) NOT NULL,
+  `contraseña` varchar(255) DEFAULT NULL,
   `Direccion` varchar(100) DEFAULT NULL,
   `Telefono` varchar(15) DEFAULT NULL,
   `Correo_electronico` varchar(50) DEFAULT NULL,
@@ -314,7 +313,7 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`ID_usuario`, `Nombres`, `Apellidos`, `Identificacion`, `contraseña`, `Direccion`, `Telefono`, `Correo_electronico`, `ID_rol`) VALUES
-(1, 'Juan', 'Pérez', '123456789', '$2y$10$naPVTTO45MSjj', 'Calle 123', '1234567890', 'juan.perez@example.com', 'Administrador');
+(1, 'Juan', 'Pérez', '123456789', '$2y$10$TDz5Nj/HUsuXCbsV1eJY2e3hY88SjscxaCb7vrJVBbVoXbDZrhT3u', 'Calle 123', '1234567890', 'juan.perez@example.com', 'Administrador');
 
 --
 -- Índices para tablas volcadas
@@ -469,7 +468,7 @@ ALTER TABLE `tareas`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `ID_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `ID_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- Restricciones para tablas volcadas
