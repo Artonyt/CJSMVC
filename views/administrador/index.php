@@ -103,7 +103,7 @@ require_once '../../config/db.php';
 </div>
     </section>
     <div class="salir">
-        <button id="btn_salir">Salir</button>
+        <button id="btn_salir" onclick="window.location.href='/dashboard/cjs/login/logout.php'">Salir</button>
     </div>
 
     <footer>

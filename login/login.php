@@ -38,7 +38,7 @@
     </div>
 
     <input type="submit" value="Ingresar">
-    <a href="recuperar_contraseña.php">¿Olvidó su contraseña?</a><br>
+    
   </form>
 </div>
 

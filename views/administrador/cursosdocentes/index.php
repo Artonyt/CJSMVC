@@ -127,8 +127,8 @@
                 <a href="http://localhost/dashboard/cjs/views/administrador/index.php" class="button boton-centrado" id="btn-regresar">Regresar</a>
             </div>
             <div class="salir">
-                <button id="btn_salir">Salir</button>
-            </div>
+        <button id="btn_salir" onclick="window.location.href='/dashboard/cjs/login/logout.php'">Salir</button>
+    </div>
         </section>
     </section>
     <script>
