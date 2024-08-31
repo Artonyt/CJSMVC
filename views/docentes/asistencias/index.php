@@ -71,8 +71,8 @@ require_once '../../config/conexion.php';
 <div class="botones-admin">
 <?php
 $urls = [
-    '/CJS/Views/docente/CursosAsistencias.php' => 'Control de Asistencias',
-    '/CJS/Views/docente/CursosNotas.php' => 'Control de Notas',
+    '/cjs/views/docente/CursosAsistencias.php' => 'Control de Asistencias',
+    '/cjs/views/docente/CursosNotas.php' => 'Control de Notas',
 ];
 $i = 0;
 foreach ($urls as $url => $label) {

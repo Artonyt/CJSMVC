@@ -3,16 +3,17 @@ include '../../../config/db.php'; // Asegúrate de que db.php esté configurado 
 session_start();
 
 // Verificar si el usuario está autenticado
-if (!isset($_SESSION['ID_usuario'])) {
+if (!isset($_SESSION['Identificacion'])) {
     die("Usuario no autenticado.");
 }
 
-$user_id = $_SESSION['ID_usuario'];
+// Usar la clave correcta para la sesión
+$user_id = $_SESSION['Identificacion'];
 
 // Consulta SQL para obtener los datos del usuario
-$sql_usuario = "SELECT Nombres, Apellidos, Correo_electronico FROM usuarios WHERE ID_usuario = ?";
+$sql_usuario = "SELECT Nombres, Apellidos, Correo_electronico FROM usuarios WHERE Identificacion = ?";
 $stmt_usuario = $db->prepare($sql_usuario);
-$stmt_usuario->bindParam(1, $user_id, PDO::PARAM_INT);
+$stmt_usuario->bindParam(1, $user_id, PDO::PARAM_STR);
 $stmt_usuario->execute();
 $usuario = $stmt_usuario->fetch(PDO::FETCH_ASSOC);
 
@@ -33,7 +34,7 @@ $sql_cursos = "SELECT c.ID_curso, c.Nombre_curso, m.Nombre_materia
                WHERE dm.ID_docente = ?";
 
 $stmt_cursos = $db->prepare($sql_cursos);
-$stmt_cursos->bindParam(1, $user_id, PDO::PARAM_INT);
+$stmt_cursos->bindParam(1, $user_id, PDO::PARAM_STR);
 $stmt_cursos->execute();
 $cursos = $stmt_cursos->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -55,7 +56,7 @@ $cursos = $stmt_cursos->fetchAll(PDO::FETCH_ASSOC);
     <div class="barra-lateral">
         <div id="cloud">
             <div class="nombre-pagina">
-                <img src="../../../assets/logo (2).png" alt="" width="30%">
+                <img src="../../../assets/logo.png" alt="" width="30%">
             </div>
         </div>
         <nav class="navegacion">

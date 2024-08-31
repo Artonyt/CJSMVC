@@ -22,14 +22,18 @@ if (!isset($_SESSION['Identificacion'])) {
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color: #f0f0f0;
+            background-image: url('../../assets/fondo.jpg'); /* Reemplaza con la ruta de tu imagen */
+            background-size: cover; /* Asegura que la imagen cubra todo el fondo */
+            background-position: center; /* Centra la imagen */
+            background-repeat: no-repeat; /* Evita que la imagen se repita */
             margin: 0;
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
         }
+
 
         .admin {
             text-align: center;
-            background-color: #c2c2c2;
+            background-color: #ffffff;
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
@@ -97,7 +101,7 @@ if (!isset($_SESSION['Identificacion'])) {
 <body>
     <section class="admin">
         <div class="subtitulo-admin">
-            <h2>Administrador</h2>
+            <h2>ADMINISTRADOR</h2>
         </div>
         <div class="botones-admin">
             <?php

@@ -94,8 +94,9 @@ if (isset($_GET['id'])) {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         /* Estilos específicos para la sección admin */
+        
         .admin {
-            max-width: 800px;
+            max-width: 10000px;
             margin: 20px auto;
             background-color: #fff;
             border: 1px solid #ddd;
@@ -111,15 +112,7 @@ if (isset($_GET['id'])) {
             margin-bottom: 20px;
             text-align: center;
         }
-        .form-container {
-            max-width: 400px;
-            margin: auto;
-            background-color: #f9f9f9;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 0 5px rgba(0,0,0,0.1);
-        }
+    
         .form-group {
             margin-bottom: 1rem;
         }
@@ -202,7 +195,7 @@ if (isset($_GET['id'])) {
                 </div>
                 <div class="form-group">
                     <label for="contraseña">Contraseña:</label>
-                    <input type="password" name="contraseña" id="contraseña" value="" required>
+                    <input type="password" name="contraseña" id="contraseña" value="" >
                 </div>
                 <div class="form-group">
                     <label for="direccion">Dirección:</label>
