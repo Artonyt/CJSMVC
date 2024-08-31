@@ -1,4 +1,12 @@
 <?php
+session_start();
+
+// Verificar si el usuario ha iniciado sesión
+if (!isset($_SESSION['Identificacion'])) {
+    // Si no ha iniciado sesión, redirigir al inicio de sesión
+    header("Location: /dashboard/cjs/login/login.php");
+    exit;
+}
 // Conectar a la base de datos
 require_once '../../../config/db.php';
 require_once '../../../router.php';

@@ -1,11 +1,13 @@
 <?php
-session_start(); // Iniciar la sesión
+session_start();
 
-// Destruir todas las sesiones
-session_unset();
+// Destruir todas las variables de sesión
+$_SESSION = array();
+
+// Destruir la sesión
 session_destroy();
 
-// Redirigir a la página de inicio de sesión
+// Redirigir al usuario a la página de inicio de sesión
 header("Location: /dashboard/cjs/login/login.php");
-exit();
+exit;
 ?>

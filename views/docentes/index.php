@@ -77,8 +77,8 @@ require_once '../../config/db.php';
     <?php
     // Construir la URL adecuada para los botones
     $urls = [
-        '/dashboard/cjs/views/docentes/asistencias/index.php' => 'Control de Asistencias',
-        '/dashboard/cjs/views/docentes/notas' => 'Control de Notas',
+        '/dashboard/cjs/views/docentes/asistencias/CursosAsistencias.php' => 'Control de Asistencias',
+        '/dashboard/cjs/views/docentes/notas/CursosNotas.php' => 'Control de Notas',
         
     ];
 

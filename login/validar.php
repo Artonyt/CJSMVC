@@ -24,42 +24,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Usuario encontrado
         $usuarioData = $resultadoUsuario->fetch_assoc();
         
-        // Mostrar información para depuración (elimina después de la depuración)
-        echo "Contraseña ingresada: " . htmlspecialchars($password) . "<br>";
-        echo "Contraseña en la BD (hash): " . htmlspecialchars($usuarioData["contraseña"]) . "<br>";
-
         // Verificar la contraseña
         if (password_verify($password, $usuarioData["contraseña"])) {
-            echo "¡Contraseña correcta!<br>";
             // Contraseña correcta, iniciar sesión
+            $_SESSION["Identificacion"] = $usuarioData["Identificacion"]; // Identificación del usuario
             $_SESSION["usuario"] = $usuarioData["Nombres"]; // Almacenar el nombre del usuario en sesión
             $_SESSION["ID_rol"] = $usuarioData["ID_rol"]; // Almacenar el ID del rol en sesión
 
             // Redirigir según el rol del usuario
             if ($usuarioData["ID_rol"] == "Administrador") {
                 header("Location: ../views/administrador/index.php");
-                exit();
             } elseif ($usuarioData["ID_rol"] == "Docente") {
                 header("Location: ../views/docentes/index.php");
-                exit();
             } else {
                 // Si el rol no está definido, manejar error
                 $error = "Rol de usuario no válido";
+                $_SESSION["error"] = $error;
+                header("Location: login.php");
             }
         } else {
             // Contraseña incorrecta
             $error = "Contraseña incorrecta";
+            $_SESSION["error"] = $error;
+            header("Location: login.php");
         }
     } else {
         // Usuario no encontrado
         $error = "Usuario no encontrado";
+        $_SESSION["error"] = $error;
+        header("Location: login.php");
     }
 
-    $_SESSION["error"] = $error;
-    header("Location: login.php");
-    exit();
-
+    // Cerrar conexión y sentencia
     $stmt->close();
     $conexion->close();
+
+    exit();
 }
 ?>

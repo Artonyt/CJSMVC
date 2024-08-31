@@ -1,4 +1,14 @@
 <?php
+
+session_start();
+
+// Verificar si el usuario ha iniciado sesión
+if (!isset($_SESSION['Identificacion'])) {
+    // Si no ha iniciado sesión, redirigir al inicio de sesión
+    header("Location: /dashboard/cjs/login/login.php");
+    exit;
+}
+
     // Conectar a la base de datos
     require_once '../../../config/db.php';
     require_once '../../../router.php';
@@ -72,14 +82,11 @@
     <section class="admin">
         <div class="subtitulo-admin">
             <h2>Administradores</h2>
-        </div>
-        <div class="crear-administrador">
+            <div class="crear-administrador">
             <a href="/dashboard/cjs/views/administrador/administradores/create.php" class="button boton-centrado">Crear Nuevo Administrador</a>
         </div>
+        </div>
         <section class="administradores" id="section-administradores">
-            <div class="descripcion-administrador">
-                <p>Listado y Gestión de Administradores</p>
-            </div>
             <div class="tabla-administradores tabla-scroll">
                 <table class="table table-striped table-dark table_id" border="1" id="tabla-administradores">
                     <thead>

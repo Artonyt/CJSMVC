@@ -1,171 +1,107 @@
 <?php
-    // Conectar a la base de datos
-    require_once '../../../config/db.php';
-    require_once '../../../router.php';
-
-    // Procesar la eliminación si se recibe un ID válido por GET
-    if (isset($_GET['delete_id'])) {
-        $delete_id = $_GET['delete_id'];
-
-        // Verificar si el ID es válido y realizar la eliminación
-        if (!empty($delete_id)) {
-            $query = "DELETE FROM usuarios WHERE ID_usuario = :delete_id AND ID_rol = 'Docente'";
-            $stmt = $db->prepare($query);
-            $stmt->bindParam(':delete_id', $delete_id);
-
-            if ($stmt->execute()) {
-                // Redirigir de vuelta a la página actual después de la eliminación
-                header("Location: index.php");
-                exit();
-            } else {
-                echo "Error al intentar eliminar el docente.";
-            }
-        }
-    }
-
-    // Obtener y mostrar la lista de docentes (asumiendo que el ID del rol de docente es 'Docente')
-    $query = "SELECT * FROM usuarios WHERE ID_rol = 'Docente'";
-    $result = $db->query($query);
+// Conectar a la base de datos
+require_once '../../config/conexion.php';
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Administrativo - Gestión de Docentes</title>
-    <link rel="stylesheet" type="text/css" href="../../../assets/styles.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
+    <title>Panel Docente</title>
+    <link rel="stylesheet" type="text/css" href="../../assets/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <header>
-        <div class="logo-container">
-            <img src="../../../assets/Logo.png" alt="Logo de la empresa" class="logo">
-        </div>
-        <div class="title">
-            <h1>Gestión de Docentes</h1>
-        </div>
+<style>
+.button-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+.button-admin {
+    flex: 1;
+    margin: 10px;
+    text-align: center;
+}
+.salir {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+}
+#btn_salir {
+    background-color: #f44336; /* Color rojo */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+#btn_salir:hover {
+    background-color: #d32f2f; /* Rojo más oscuro al pasar el mouse */
+}
+</style>
+<header>
+    <div class="logo-container">
+        <img src="../../Assets/Imagenes/logo (2).png" alt="Logo de la empresa" class="logo">
+    </div>
+    <div class="title">
+        <h1>Panel del Docente</h1>
+    </div>
+    <div class="datetime">
+        <?php
+            date_default_timezone_set('America/Bogota');
+            $fechaActual = date("d/m/Y");
+            $horaActual = date("h:i a");
+        ?>
         <div class="datetime">
-            <?php
-                date_default_timezone_set('America/Bogota');
-                $fechaActual = date("d/m/Y");
-                $horaActual = date("h:i a");
-            ?>
-            <div class="datetime">
-                <div class="fecha">
-                    <p>Fecha actual: <?php echo $fechaActual; ?></p>
-                </div>
-                <div class="hora">
-                    <p>Hora actual: <?php echo $horaActual; ?></p>
-                </div>
+            <div class="fecha">
+                <p>Fecha actual: <?php echo $fechaActual; ?></p>
+            </div>
+            <div class="hora">
+                <p>Hora actual: <?php echo $horaActual; ?></p>
             </div>
         </div>
-    </header>
-    <section class="admin">
-        <div class="subtitulo-admin">
-            <h2>Docentes</h2>
-        </div>
-        <div class="crear-docente">
-            <a href="/dashboard/cjs/views/administrador/docentes/create.php" class="button boton-centrado">Crear Nuevo Docente</a>
-        </div>
-        <section class="docentes" id="section-docentes">
-            <div class="descripcion-ambiente">
-                <p>Listado y Gestión de Docentes</p>
-            </div>
-            <div class="tabla-docentes tabla-scroll">
-                <table class="table table-striped table-dark table_id" border="1" id="tabla-docentes">
-                    <thead>
-                        <tr>
-                            <th>Nombres</th>
-                            <th>Apellidos</th>
-                            <th>Identificación</th>
-                            <th>Contraseña</th>
-                            <th>Dirección</th>
-                            <th>Teléfono</th>
-                            <th>Correo Electrónico</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        if ($result->rowCount() > 0) {
-                            while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-                                echo "<tr>";
-                                echo "<td>" . htmlspecialchars($row['Nombres']) . "</td>";
-                                echo "<td>" . htmlspecialchars($row['Apellidos']) . "</td>";
-                                echo "<td>" . htmlspecialchars($row['Identificacion']) . "</td>";
-                                echo "<td>" . htmlspecialchars($row['contraseña']) . "</td>";
-                                echo "<td>" . htmlspecialchars($row['Direccion']) . "</td>";
-                                echo "<td>" . htmlspecialchars($row['Telefono']) . "</td>";
-                                echo "<td>" . htmlspecialchars($row['Correo_electronico']) . "</td>";
-                                echo "<td>";
-                                $url_update = '/dashboard/cjs/views/administrador/docentes/update.php?id=' . $row['ID_usuario'];
-                                echo "<a href='" . htmlspecialchars($url_update) . "' class='boton-modificar'><img src='../../../assets/editar.svg' alt='Editar'></a>";
-                                $url_delete = htmlspecialchars($_SERVER["PHP_SELF"]) . "?delete_id=" . $row['ID_usuario'];
-                                echo "<a href='" . $url_delete . "' class='boton-eliminar' onclick=\"return confirm('¿Estás seguro que deseas eliminar este docente?');\"><img src='../../../assets/eliminar.svg' alt='Eliminar'></a>";
-                                echo "</td>";
-                                echo "</tr>";
-                            }
-                        } else {
-                            echo "<tr><td colspan='8'>No hay docentes registrados</td></tr>";
-                        }
-                        ?>
-                    </tbody>
-                </table>
-            </div>
-            <div class="regresar">
-                <a href="http://localhost/dashboard/cjs/views/docentes/index.php" class="button boton-centrado" id="btn-regresar">Regresar</a>
-            </div>
-            <div class="salir">
-                <button id="btn_salir">Salir</button>
-            </div>
-        </section>
-    </section>
-    <script>
-        $(document).ready(function() {
-            var table = $('#tabla-docentes').DataTable({
-                "language": {
-                    "decimal": "",
-                    "emptyTable": "No hay datos disponibles en la tabla",
-                    "info": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
-                    "infoEmpty": "Mostrando 0 a 0 de 0 entradas",
-                    "infoFiltered": "(filtrado de _MAX_ entradas totales)",
-                    "infoPostFix": "",
-                    "thousands": ",",
-                    "lengthMenu": "Mostrar _MENU_ entradas",
-                    "loadingRecords": "Cargando...",
-                    "processing": "Procesando...",
-                    "search": "Buscar:",
-                    "zeroRecords": "No se encontraron registros coincidentes",
-                    "paginate": {
-                        "first": "Primero",
-                        "last": "Último",
-                        "next": "Siguiente",
-                        "previous": "Anterior"
-                    },
-                    "aria": {
-                        "sortAscending": ": activar para ordenar la columna ascendente",
-                        "sortDescending": ": activar para ordenar la columna descendente"
-                    }
-                },
-                dom: 'Bfrtip',
-                buttons: [
-                    'copy', 'csv', 'excel', 'pdf'
-                ],
-                paging: true,
-                pageLength: 6
-            });
-        });
-    </script>
-    <footer>
-        <p>Todos los derechos reservados</p>
-    </footer>
+    </div>
+</header>
+<section class="admin">
+<div class="subtitulo-admin">
+    <h2>Docente</h2>
+</div>
+<div class="botones-admin">
+<?php
+$urls = [
+    '/CJS/Views/docente/CursosAsistencias.php' => 'Control de Asistencias',
+    '/CJS/Views/docente/CursosNotas.php' => 'Control de Notas',
+];
+$i = 0;
+foreach ($urls as $url => $label) {
+    if ($i % 3 == 0) {
+        if ($i > 0) echo '</div>';
+        echo '<div class="button-row">';
+    }
+    echo '<a href="' . $url . '" class="button-admin">' . $label . '</a>';
+    $i++;
+}
+if ($i % 3 != 0) {
+    echo '</div>';
+}
+?>
+</div>
+</section>
+<div class="salir">
+    <form id="logoutForm" action="logout.php" method="POST">
+        <button type="submit" id="btn_salir">Salir</button>
+    </form>
+</div>
+<form action="views/docentes/asistencias/CursosAsistencias.php" method="GET">
+    <label for="curso_id">ID del Curso:</label>
+    <input type="text" id="curso_id" name="curso_id">
+    <button type="submit">Validar Curso</button>
+</form>
+<footer>
+    <p>Todos los derechos reservados</p>
+</footer>
+<script src="../assets/menu.js"></script>
 </body>
 </html>
