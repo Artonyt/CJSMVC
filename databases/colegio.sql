@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 19-08-2024 a las 05:36:30
+-- Tiempo de generación: 01-09-2024 a las 01:13:12
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -60,6 +60,24 @@ CREATE TABLE `asistencia` (
   `Estado` enum('Justificada','Falla','Asistencia') DEFAULT NULL,
   `Excusa_imagen` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `asistencia`
+--
+
+INSERT INTO `asistencia` (`ID_asistencia`, `ID_estudiante`, `ID_materia`, `Fecha`, `Estado`, `Excusa_imagen`) VALUES
+(36, 14, 19, '2024-08-29', '', NULL),
+(37, 14, 19, '2024-08-16', '', NULL),
+(38, 14, 19, '2024-08-15', '', NULL),
+(39, 14, 19, '2024-08-08', '', NULL),
+(40, 15, 19, '2024-08-08', '', NULL),
+(41, 16, 19, '2024-08-08', '', NULL),
+(42, 15, 19, '2024-08-15', '', NULL),
+(43, 16, 19, '2024-08-15', '', NULL),
+(44, 14, 19, '2024-08-07', '', NULL),
+(45, 14, 19, '2024-08-11', '', NULL),
+(46, 5, 2, '2024-08-21', '', NULL),
+(47, 5, 2, '2024-08-29', '', NULL);
 
 -- --------------------------------------------------------
 
@@ -130,7 +148,8 @@ CREATE TABLE `docentes_materias` (
 
 INSERT INTO `docentes_materias` (`ID_docente_materia`, `ID_docente`, `ID_materia`) VALUES
 (4, 1, 1),
-(5, 1, 2);
+(5, 1, 2),
+(8, 30, 18);
 
 -- --------------------------------------------------------
 
@@ -313,7 +332,8 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`ID_usuario`, `Nombres`, `Apellidos`, `Identificacion`, `contraseña`, `Direccion`, `Telefono`, `Correo_electronico`, `ID_rol`) VALUES
-(1, 'Juan', 'Pérez', '123456789', '$2y$10$TDz5Nj/HUsuXCbsV1eJY2e3hY88SjscxaCb7vrJVBbVoXbDZrhT3u', 'Calle 123', '1234567890', 'juan.perez@example.com', 'Administrador');
+(1, 'Juan', 'Pérez', '123456789', '$2y$10$TDz5Nj/HUsuXCbsV1eJY2e3hY88SjscxaCb7vrJVBbVoXbDZrhT3u', 'Calle 123', '1234567890', 'juan.perez@example.com', 'Administrador'),
+(30, 'Carlos', 'Ortiz', '52800312', '$2y$10$uYqKHSVgb17CaWDqFXCbnOhjO58vPc3ls86IHneb33QcwBoQSMDxW', 'casa', '3003371492', 'vadas@gmail.com', 'Docente');
 
 --
 -- Índices para tablas volcadas
@@ -414,7 +434,7 @@ ALTER TABLE `asignaturas`
 -- AUTO_INCREMENT de la tabla `asistencia`
 --
 ALTER TABLE `asistencia`
-  MODIFY `ID_asistencia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `ID_asistencia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT de la tabla `cursos`
@@ -426,7 +446,7 @@ ALTER TABLE `cursos`
 -- AUTO_INCREMENT de la tabla `docentes_materias`
 --
 ALTER TABLE `docentes_materias`
-  MODIFY `ID_docente_materia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `ID_docente_materia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `estudiantes`
@@ -468,7 +488,7 @@ ALTER TABLE `tareas`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `ID_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `ID_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- Restricciones para tablas volcadas
