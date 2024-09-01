@@ -227,7 +227,7 @@ footer .button:hover {
 
 /* Estilos personalizados para el botón de confirmación en SweetAlert2 */
 .custom-btn-class {
-    background-color: #4CAF50; /* Color de fondo */
+    background-color: #6f42c1; /* Color de fondo */
     color: white; /* Color del texto */
     padding: 10px 20px; /* Espaciado interno */
     border: none; /* Borde */
@@ -238,7 +238,7 @@ footer .button:hover {
 }
 
 .custom-btn-class:hover {
-    background-color: #45a049; /* Color de fondo al pasar sobre el botón */
+    background-color: #6f42c1; /* Color de fondo al pasar sobre el botón */
 }
 
 /*section del index de ambientes*/
@@ -405,7 +405,7 @@ select{
 }
 
 button{
-    background-color: #4CAF50;
+    background-color: #6f42c1;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -424,7 +424,7 @@ button{
 }
 
 .create-ambiente button[type="submit"] {
-    background-color: #4CAF50;
+    background-color: #6f42c1;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -434,11 +434,11 @@ button{
 }
 
 .create-ambiente button[type="submit"]:hover {
-    background-color: #45a049;
+    background-color: #6f42c1;
 }
 
 #btn-create {
-    background-color: #4CAF50; /* Color de fondo */
+    background-color: #6f42c1; /* Color de fondo */
     color: white; /* Color del texto */
     padding: 10px 20px; /* Espaciado interno */
     border: none; /* Sin borde */
@@ -450,7 +450,7 @@ button{
 }
 
 #btn-create:hover {
-    background-color: #45a049; /* Color de fondo al pasar el ratón */
+    background-color: #5a2d91; /* Color de fondo al pasar el ratón */
 }
 /*Estilos para el actualizar ambiente*/
 .update-ambiente {
@@ -484,7 +484,7 @@ button{
 }
 
 .update-ambiente button[type="submit"] {
-    background-color: #4CAF50;
+    background-color: #6f42c1;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -494,11 +494,11 @@ button{
 }
 
 .update-ambiente button[type="submit"]:hover {
-    background-color: #45a049;
+    background-color: #5a2d91;
 }
 
 #btn-update {
-    background-color: #4CAF50; /* Color de fondo */
+    background-color: #6f42c1; /* Color de fondo */
     color: white; /* Color del texto */
     padding: 10px 20px; /* Espaciado interno */
     border: none; /* Sin borde */

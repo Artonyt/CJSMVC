@@ -7,67 +7,78 @@ if (!isset($_SESSION['Identificacion'])) {
     header("Location: /dashboard/cjs/login/login.php");
     exit;
 }
-    // Conectar a la base de datos
-    require_once '../../../config/db.php';
-    require_once '../../../router.php';
 
-    // Obtener el ID del administrador a actualizar desde la URL
-    $id = $_GET['id'] ?? '';
+// Conectar a la base de datos
+require_once '../../../config/db.php';
+require_once '../../../router.php';
 
-    if (empty($id)) {
-        echo "ID de administrador no proporcionado.";
-        exit();
-    }
+// Obtener el ID del administrador a actualizar desde la URL
+$id = $_GET['id'] ?? '';
 
-    // Procesar el formulario de actualización
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $nombres = $_POST['nombres'];
-        $apellidos = $_POST['apellidos'];
-        $identificacion = $_POST['identificacion'];
-        $contrasena = $_POST['contrasena'];
-        $direccion = $_POST['direccion'];
-        $telefono = $_POST['telefono'];
-        $correo = $_POST['correo'];
+if (empty($id)) {
+    echo "ID de administrador no proporcionado.";
+    exit();
+}
 
-        // Validar que los campos no estén vacíos
-        if (!empty($nombres) && !empty($apellidos) && !empty($identificacion) && !empty($contrasena) && !empty($direccion) && !empty($telefono) && !empty($correo)) {
-            // Encriptar la contraseña
+// Procesar el formulario de actualización
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $nombres = $_POST['nombres'];
+    $apellidos = $_POST['apellidos'];
+    $identificacion = $_POST['identificacion'];
+    $contrasena = $_POST['contrasena'];
+    $direccion = $_POST['direccion'];
+    $telefono = $_POST['telefono'];
+    $correo = $_POST['correo'];
+
+    // Validar que los campos obligatorios no estén vacíos
+    if (!empty($nombres) && !empty($apellidos) && !empty($identificacion) && !empty($direccion) && !empty($telefono) && !empty($correo)) {
+        
+        // Iniciar la consulta SQL
+        $query = "UPDATE usuarios SET Nombres = :nombres, Apellidos = :apellidos, Identificacion = :identificacion, Direccion = :direccion, Telefono = :telefono, Correo_electronico = :correo";
+
+        // Si se ha proporcionado una nueva contraseña, añadirla a la consulta
+        if (!empty($contrasena)) {
             $hashedPassword = password_hash($contrasena, PASSWORD_BCRYPT);
+            $query .= ", contraseña = :contrasena";
+        }
 
-            $query = "UPDATE usuarios SET Nombres = :nombres, Apellidos = :apellidos, Identificacion = :identificacion, contraseña = :contrasena, Direccion = :direccion, Telefono = :telefono, Correo_electronico = :correo WHERE ID_usuario = :id AND ID_rol = 'Administrador'";
-            $stmt = $db->prepare($query);
-            $stmt->bindParam(':nombres', $nombres);
-            $stmt->bindParam(':apellidos', $apellidos);
-            $stmt->bindParam(':identificacion', $identificacion);
+        $query .= " WHERE ID_usuario = :id AND ID_rol = 'Administrador'";
+
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':nombres', $nombres);
+        $stmt->bindParam(':apellidos', $apellidos);
+        $stmt->bindParam(':identificacion', $identificacion);
+        if (!empty($contrasena)) {
             $stmt->bindParam(':contrasena', $hashedPassword);
-            $stmt->bindParam(':direccion', $direccion);
-            $stmt->bindParam(':telefono', $telefono);
-            $stmt->bindParam(':correo', $correo);
-            $stmt->bindParam(':id', $id);
+        }
+        $stmt->bindParam(':direccion', $direccion);
+        $stmt->bindParam(':telefono', $telefono);
+        $stmt->bindParam(':correo', $correo);
+        $stmt->bindParam(':id', $id);
 
-            if ($stmt->execute()) {
-                // Redirigir después de la actualización
-                header("Location: index.php");
-                exit();
-            } else {
-                echo "Error al intentar actualizar el administrador.";
-            }
+        if ($stmt->execute()) {
+            // Redirigir después de la actualización
+            header("Location: index.php");
+            exit();
         } else {
-            echo "Todos los campos son obligatorios.";
+            echo "Error al intentar actualizar el administrador.";
         }
     } else {
-        // Obtener los datos actuales del administrador
-        $query = "SELECT * FROM usuarios WHERE ID_usuario = :id AND ID_rol = 'Administrador'";
-        $stmt = $db->prepare($query);
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
-        $admin = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (!$admin) {
-            echo "Administrador no encontrado.";
-            exit();
-        }
+        echo "Todos los campos obligatorios deben ser llenados.";
     }
+} else {
+    // Obtener los datos actuales del administrador
+    $query = "SELECT * FROM usuarios WHERE ID_usuario = :id AND ID_rol = 'Administrador'";
+    $stmt = $db->prepare($query);
+    $stmt->bindParam(':id', $id);
+    $stmt->execute();
+    $admin = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$admin) {
+        echo "Administrador no encontrado.";
+        exit();
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -78,10 +89,17 @@ if (!isset($_SESSION['Identificacion'])) {
     <title>Panel Administrativo - Editar Administrador</title>
     <link rel="stylesheet" type="text/css" href="../../../assets/styles.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
+       body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: url('../../../assets/fondo.jpg'); /* Reemplaza con la ruta de tu imagen */
+            background-size: cover; /* Asegura que la imagen cubra todo el fondo */
+            background-position: center; /* Centra la imagen */
+            background-repeat: no-repeat; /* Evita que la imagen se repita */
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
         }
 
         .form-container {
@@ -167,8 +185,8 @@ if (!isset($_SESSION['Identificacion'])) {
                     <input type="text" id="identificacion" name="identificacion" value="<?php echo htmlspecialchars($admin['Identificacion']); ?>" required>
                 </div>
                 <div class="form-group">
-                    <label for="contrasena">Contraseña:</label>
-                    <input type="password" id="contrasena" name="contrasena" value="<?php echo htmlspecialchars($admin['contraseña']); ?>" required>
+                    <label for="contrasena">Contraseña :</label>
+                    <input type="password" id="contrasena" name="contrasena" placeholder="Ingrese una nueva contraseña solo si desea cambiarla">
                 </div>
                 <div class="form-group">
                     <label for="direccion">Dirección:</label>

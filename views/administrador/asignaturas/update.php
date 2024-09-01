@@ -70,10 +70,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id_asignatura'])) {
     <style>
         /* Estilos específicos para este formulario */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: url('../../../assets/fondo.jpg'); /* Reemplaza con la ruta de tu imagen */
+            background-size: cover; /* Asegura que la imagen cubra todo el fondo */
+            background-position: center; /* Centra la imagen */
+            background-repeat: no-repeat; /* Evita que la imagen se repita */
             margin: 0;
-            padding: 0;
+            font-family: 'Roboto', sans-serif;
         }
     
         .logo-container {
@@ -81,46 +87,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id_asignatura'])) {
             justify-content: center;
             margin-bottom: 10px;
         }
-        .logo {
-            max-width: 150px;
-        }
-        .title {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .admin {
-            max-width: 800px;
-            margin: 20px auto;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        .subtitulo-admin {
-            background-color: #007bff;
-            color: #fff;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .crear-asignatura {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .crear-asignatura a.button {
-            display: inline-block;
-            background-color: #28a745;
-            color: #fff;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 4px;
-            transition: background-color 0.3s ease;
-        }
-        .crear-asignatura a.button:hover {
-            background-color: #218838;
-        }
+
+        
+
         .form-container {
             max-width: 400px;
             margin: auto;
@@ -148,7 +117,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id_asignatura'])) {
         .form-group button {
             width: 100%;
             padding: 10px;
-            background-color: #66BB6A;
+            background-color: #6f42c1;
             color: #fff;
             border: none;
             border-radius: 4px;
@@ -156,14 +125,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id_asignatura'])) {
             font-size: 16px;
             transition: background-color 0.3s ease;
         }
-        .form-group button:hover {
-            background-color: #0056b3;
-        }
-        .mensaje {
-            text-align: center;
-            margin-top: 20px;
-            color: red;
-        }
+        
     </style>
 </head>
 <body>

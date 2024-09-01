@@ -103,10 +103,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </script>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: url('../../../assets/fondo.jpg'); /* Reemplaza con la ruta de tu imagen */
+            background-size: cover; /* Asegura que la imagen cubra todo el fondo */
+            background-position: center; /* Centra la imagen */
+            background-repeat: no-repeat; /* Evita que la imagen se repita */
             margin: 0;
-            padding: 0;
+            font-family: 'Roboto', sans-serif;
         }
         .formulario {
             max-width: 500px;

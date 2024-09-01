@@ -83,37 +83,47 @@ if (isset($_GET['id'])) {
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-image: url('../../assets/fondo.jpg'); /* Reemplaza con la ruta de tu imagen */
-            background-size: cover; /* Asegura que la imagen cubra todo el fondo */
-            background-position: center; /* Centra la imagen */
-            background-repeat: no-repeat; /* Evita que la imagen se repita */
+            background-color: #f0f0f0;
+            background-image: url('../../../assets/fondo.jpg'); 
+            background-size: cover; 
+            background-position: center; 
+            background-repeat: no-repeat; 
             margin: 0;
             font-family: 'Roboto', sans-serif;
         }
-       
-        header .logo-container img {
-            max-width: 150px;
-        }
-        header .title h1 {
-            margin: 0;
-        }
-        .formulario {
-            max-width: 500px;
-            margin: 30px auto;
+
+        .form-container {
+            max-width: 600px;
             background: white;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
         }
+
+        header .logo-container img {
+            max-width: 150px;
+        }
+
+        header .title h1 {
+            margin: 0;
+        }
+
+        .formulario {
+            max-width: 500px;
+            margin: 30px auto;
+        }
+
         .form-group {
             margin-bottom: 15px;
         }
+
         .form-group label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
             color: #333;
         }
+
         .form-group input, .form-group select {
             width: 100%;
             padding: 10px;
@@ -122,6 +132,7 @@ if (isset($_GET['id'])) {
             font-size: 16px;
             box-sizing: border-box;
         }
+
         .form-group button {
             background-color: #6f42c1;
             color: white;
@@ -134,9 +145,11 @@ if (isset($_GET['id'])) {
             margin: 0 auto;
             display: block;
         }
+
         .form-group button:hover {
             background-color: #5a2d91;
         }
+
         .error {
             background-color: #f8d7da;
             color: #721c24;
@@ -145,7 +158,7 @@ if (isset($_GET['id'])) {
             padding: 15px;
             margin-bottom: 20px;
         }
-       
+
         .button {
             padding: 10px 20px;
             background-color: #6f42c1;
@@ -155,82 +168,88 @@ if (isset($_GET['id'])) {
             cursor: pointer;
             text-decoration: none;
         }
+
         .button:hover {
             background-color: #5a2d91;
         }
-   
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+
     </style>
 </head>
 <body>
-    <header>
-        <div class="logo-container">
-            <img src="../../../assets/Logo.png" alt="Logo de la empresa" class="logo">
-        </div>
-        <div class="title">
-            <h1>Actualizar Asignación de Docente a Materia</h1>
-        </div>
-    </header>
-    <section class="create">
-        <?php if (!empty($error)): ?>
-            <div class="error">
-                <p><?php echo htmlspecialchars($error); ?></p>
+    
+        <header>
+            <div class="logo-container">
+                <img src="../../../assets/Logo.png" alt="Logo de la empresa" class="logo">
             </div>
-        <?php endif; ?>
-        <?php if ($success): ?>
-            <div class="success">
-                <p>Asignación actualizada con éxito.</p>
+            <div class="title">
+                <h1>Actualizar Asignación de Docente a Materia</h1>
             </div>
-        <?php endif; ?>
-        <?php if ($currentAssignment): ?>
-            <form method="POST" action="">
-                <div class="form-group">
-                    <label for="id_docente">Docente:</label>
-                    <select name="id_docente" id="id_docente" required>
-                        <?php
-                        // Mostrar la opción seleccionada en el desplegable
-                        while ($row = $resultDocentes->fetch(PDO::FETCH_ASSOC)) {
-                            $selected = ($row['ID_usuario'] == $currentAssignment['ID_docente']) ? 'selected' : '';
-                            echo "<option value='" . htmlspecialchars($row['ID_usuario']) . "' $selected>" . htmlspecialchars($row['Nombre_docente']) . "</option>";
-                        }
-                        ?>
-                    </select>
+        </header>
+        <div class="form-container">
+        <section class="create">
+            <?php if (!empty($error)): ?>
+                <div class="error">
+                    <p><?php echo htmlspecialchars($error); ?></p>
                 </div>
-                <div class="form-group">
-                    <label for="id_materia">Materia:</label>
-                    <select name="id_materia" id="id_materia" required>
-                        <?php
-                        // Mostrar la opción seleccionada en el desplegable
-                        while ($row = $resultMaterias->fetch(PDO::FETCH_ASSOC)) {
-                            $selected = ($row['ID_materia'] == $currentAssignment['ID_materia']) ? 'selected' : '';
-                            echo "<option value='" . htmlspecialchars($row['ID_materia']) . "' $selected>" . htmlspecialchars($row['Nombre_materia']) . "</option>";
-                        }
-                        ?>
-                    </select>
+            <?php endif; ?>
+            <?php if ($success): ?>
+                <div class="success">
+                    <p>Asignación actualizada con éxito.</p>
                 </div>
-                <div class="form-group">
-                    <button type="submit">Actualizar Asignación</button>
-                </div>
-            </form>
-        <?php else: ?>
-            <p>No se encontró la asignación para actualizar.</p>
-        <?php endif; ?>
-        <div class="regresar">
-            <a href="index.php" class="button">Regresar</a>
-        </div>
-    </section>
+            <?php endif; ?>
+            <?php if ($currentAssignment): ?>
+                <form method="POST" action="">
+                    <div class="form-group">
+                        <label for="id_docente">Docente:</label>
+                        <select name="id_docente" id="id_docente" required>
+                            <?php
+                            while ($row = $resultDocentes->fetch(PDO::FETCH_ASSOC)) {
+                                $selected = ($row['ID_usuario'] == $currentAssignment['ID_docente']) ? 'selected' : '';
+                                echo "<option value='" . htmlspecialchars($row['ID_usuario']) . "' $selected>" . htmlspecialchars($row['Nombre_docente']) . "</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="id_materia">Materia:</label>
+                        <select name="id_materia" id="id_materia" required>
+                            <?php
+                            while ($row = $resultMaterias->fetch(PDO::FETCH_ASSOC)) {
+                                $selected = ($row['ID_materia'] == $currentAssignment['ID_materia']) ? 'selected' : '';
+                                echo "<option value='" . htmlspecialchars($row['ID_materia']) . "' $selected>" . htmlspecialchars($row['Nombre_materia']) . "</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit">Actualizar Asignación</button>
+                    </div>
+                </form>
+            <?php else: ?>
+                <p>No se encontró la asignación para actualizar.</p>
+            <?php endif; ?>
+            <div class="regresar">
+                <a href="index.php" class="button">Regresar</a>
+            </div>
+        </section>
+    </div>
     <footer>
         <p>Todos los derechos reservados</p>
     </footer>
 
     <script>
-        // Mostrar alerta de éxito o error según el resultado de la actualización
         document.addEventListener('DOMContentLoaded', function() {
             <?php if ($success): ?>
                 Swal.fire({
                     icon: 'success',
                     title: '¡Éxito!',
                     text: 'Asignación actualizada con éxito.',
-                    timer: 2000, // 2 segundos
+                    timer: 2000,
                     timerProgressBar: true,
                     showConfirmButton: false
                 }).then((result) => {
@@ -243,7 +262,7 @@ if (isset($_GET['id'])) {
                     icon: 'error',
                     title: 'Error',
                     text: '<?php echo addslashes($error); ?>',
-                    timer: 5000, // 5 segundos
+                    timer: 5000,
                     timerProgressBar: true,
                     showConfirmButton: false
                 });

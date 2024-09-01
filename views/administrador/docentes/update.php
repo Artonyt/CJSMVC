@@ -94,7 +94,18 @@ if (isset($_GET['id'])) {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         /* Estilos específicos para la sección admin */
-        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: url('../../../assets/fondo.jpg'); /* Reemplaza con la ruta de tu imagen */
+            background-size: cover; /* Asegura que la imagen cubra todo el fondo */
+            background-position: center; /* Centra la imagen */
+            background-repeat: no-repeat; /* Evita que la imagen se repita */
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+        }
         .admin {
             max-width: 10000px;
             margin: 20px auto;
@@ -212,9 +223,14 @@ if (isset($_GET['id'])) {
                 <div class="form-group">
                     <button type="submit">Actualizar</button>
                 </div>
-            </form>
-        </section>
+                <div class="regresar">
+                <a href="index.php" class="button boton-centrado" id="btn-regresar">Regresar</a>
+            </div>
+        </div>
     </section>
+    <footer>
+        <p>Todos los derechos reservados</p>
+    </footer>
     <script>
         // Mostrar notificaciones SweetAlert2 según parámetros en URL
         <?php if (isset($_GET['success']) && $_GET['success'] == 'true'): ?>

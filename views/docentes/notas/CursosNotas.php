@@ -3,14 +3,14 @@ include '../../../config/db.php'; // Asegúrate de que db.php esté configurado 
 session_start();
 
 // Verificar si el usuario está autenticado
-if (!isset($_SESSION['ID_usuario'])) {
+if (!isset($_SESSION['Identificacion'])) {
     die("Usuario no autenticado.");
 }
 
-$user_id = $_SESSION['ID_usuario'];
+$user_id = $_SESSION['Identificacion'];
 
 // Consulta SQL para obtener los datos del usuario
-$sql_usuario = "SELECT Nombres, Apellidos, Correo_electronico FROM usuarios WHERE ID_usuario = ?";
+$sql_usuario = "SELECT Nombres, Apellidos, Correo_electronico FROM usuarios WHERE Identificacion = ?";
 $stmt_usuario = $db->prepare($sql_usuario);
 $stmt_usuario->bindParam(1, $user_id, PDO::PARAM_INT);
 $stmt_usuario->execute();

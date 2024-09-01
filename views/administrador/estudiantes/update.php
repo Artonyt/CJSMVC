@@ -106,7 +106,16 @@ $cursos = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </script>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: url('../../../assets/fondo.jpg'); /* Reemplaza con la ruta de tu imagen */
+            background-size: cover; /* Asegura que la imagen cubra todo el fondo */
+            background-position: center; /* Centra la imagen */
+            background-repeat: no-repeat; /* Evita que la imagen se repita */
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
         }
         .formulario {
             max-width: 600px;
@@ -137,12 +146,12 @@ $cursos = $stmt->fetchAll(PDO::FETCH_ASSOC);
             font-size: 18px;
             border: none;
             border-radius: 4px;
-            background-color: #4CAF50;
+            background-color: #6f42c1;
             color: white;
             cursor: pointer;
         }
         .formulario button:hover {
-            background-color: #45a049;
+            background-color: #5a2d91;
         }
    
     </style>

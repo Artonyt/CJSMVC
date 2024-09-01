@@ -43,7 +43,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         /* Estilos específicos para este formulario */
-        <style>
         body {
             display: flex;
             justify-content: center;
@@ -102,7 +101,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .crear-asignatura a.button:hover {
             background-color: #218838;
         }
-    
+        .form-container {
+            max-width: 400px;
+            margin: auto;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
         .form-group {
             margin-bottom: 1rem;
         }
@@ -111,7 +118,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             font-weight: bold;
             margin-bottom: 0.5rem;
         }
-        .form-group input[type="text"] {
+        .form-group input[type="text"], .form-group select {
             width: calc(100% - 22px);
             padding: 10px;
             border: 1px solid #ccc;
