@@ -7,8 +7,8 @@ $error = '';
 
 // Verificar si se ha enviado el formulario de inicio de sesión
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $usuario = $_POST["usuario"];
-    $password = $_POST["password"];
+    $usuario = trim($_POST["usuario"]);
+    $password = trim($_POST["password"]);
 
     // Incluir el archivo de conexión a la base de datos
     include("../../../config/db.php");
@@ -40,14 +40,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $error = "Usuario no encontrado";
             }
         } catch (PDOException $e) {
-            $error = "Error en la consulta: " . $e->getMessage();
+            $error = "Error en la consulta: " . htmlspecialchars($e->getMessage());
         }
     }
 }
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -64,7 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div>
             <a href="">
                 <div class="nombre-pagina">
-                    <img src="../../../assets/logo (2).png" alt="" width="40%">
+                    <img src="../../../assets/logo (2).png" alt="Logo" width="40%">
                 </div>
             </a>  
         </div>
@@ -80,7 +80,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <li>
                     <a href="../index.php">
                         <ion-icon name="star-outline"></ion-icon>
-                        <span>Menu</span>
+                        <span>Menú</span>
                     </a>
                 </li>
                 <li>
@@ -91,13 +91,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </li>
             </ul>
         </nav>
+
         <div>
             <div class="linea"></div>
-
             <div class="modo-oscuro">
                 <div class="info">
                     <ion-icon name="moon-outline"></ion-icon>
-                    <span>Modo Oscuro </span>
+                    <span>Modo Oscuro</span>
                 </div>
                 <div class="switch">
                     <div class="base">
@@ -105,9 +105,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                 </div>
             </div>
-    
+
             <div class="usuario">
-                <img src="../../../assets/profile.jpg" alt="">
+                <img src="../../../assets/profile.jpg" alt="Perfil">
                 <div class="info-usuario">
                     <div class="nombre-email">
                         <span class="nombre"><?php echo htmlspecialchars($nombreUsuario); ?></span>
@@ -126,22 +126,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <h1>Perfil</h1>
         <span class="nav_image">
-            <img src="../../../assets/profile.jpg" logo_img" width="15%" />
+            <img src="../../../assets/profile.jpg" alt="Perfil" width="15%">
         </span>
         
         <br>
         <br>
-        <p>Nombres: <?php echo isset($nombreUsuario) ? htmlspecialchars($nombreUsuario) : 'No disponible'; ?></p>
-        <p>Apellidos: <?php echo isset($apellidoUsuario) ? htmlspecialchars($apellidoUsuario) : 'No disponible'; ?></p>
-        <p>Identificación: <?php echo isset($identificacionUsuario) ? htmlspecialchars($identificacionUsuario) : 'No disponible'; ?></p>
-        <p>Dirección: <?php echo isset($direccionUsuario) ? htmlspecialchars($direccionUsuario) : 'No disponible'; ?></p>
-        <p>Correo electrónico: <?php echo isset($correoUsuario) ? htmlspecialchars($correoUsuario) : 'No disponible'; ?></p>
+        <p><strong>Nombres:</strong> <?php echo htmlspecialchars($nombreUsuario) ?: 'No disponible'; ?></p>
+        <p><strong>Apellidos:</strong> <?php echo htmlspecialchars($apellidoUsuario) ?: 'No disponible'; ?></p>
+        <p><strong>Identificación:</strong> <?php echo htmlspecialchars($identificacionUsuario) ?: 'No disponible'; ?></p>
+        <p><strong>Dirección:</strong> <?php echo htmlspecialchars($direccionUsuario) ?: 'No disponible'; ?></p>
+        <p><strong>Correo electrónico:</strong> <?php echo htmlspecialchars($correoUsuario) ?: 'No disponible'; ?></p>
+
+        <?php if ($error): ?>
+            <p class="error"><?php echo htmlspecialchars($error); ?></p>
+        <?php endif; ?>
     </main>
-|   <div class="salir">
+
+    <div class="salir">
         <form method="POST" action="../../../logout.php">
             <button type="submit" class="salir-button">Salir</button>
         </form>
     </div>
+
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <script src="../../Assets/js/script.js"></script>

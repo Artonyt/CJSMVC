@@ -36,6 +36,8 @@ $queryCursos = "SELECT * FROM cursos";
 $resultMaterias = $db->query($queryMaterias);
 $resultCursos = $db->query($queryCursos);
 
+$success = false; // Variable para controlar si la actualización fue exitosa
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $id_materia_post = $_POST['id_materia'];
     $id_curso_post = $_POST['id_curso'];
@@ -55,13 +57,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Confirmar la transacción
         $db->commit();
 
-        // Redirigir al índice después de la actualización
-        header("Location: index.php");
-        exit();
+        $success = true; // Actualización exitosa
+
     } catch (Exception $e) {
         // Revertir la transacción en caso de error
         $db->rollBack();
-        echo "Error al intentar actualizar la asignación: " . $e->getMessage();
+        $errorMessage = "Error al intentar actualizar la asignación: " . $e->getMessage();
     }
 }
 ?>
@@ -73,6 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Actualizar Asignación</title>
     <link rel="stylesheet" type="text/css" href="../../../assets/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert2 -->
     <style>
         body {
             display: flex;
@@ -156,7 +158,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             background-color: #5a2d91;
         }
 
-
     </style>
 </head>
 <body>
@@ -201,10 +202,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
         <div class="regresar">
                 <a href="http://localhost/dashboard/cjs/views/administrador/index.php" class="button boton-centrado" id="btn-regresar">Regresar</a>
-            </div>
+        </div>
     </section>
     <footer>
         <p>Todos los derechos reservados</p>
     </footer>
+
+    <script>
+        <?php if ($success): ?>
+            Swal.fire({
+                title: '¡Actualización Exitosa!',
+                text: 'La asignación ha sido actualizada correctamente.',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "index.php";
+                }
+            });
+        <?php elseif (isset($errorMessage)): ?>
+            Swal.fire({
+                title: 'Error',
+                text: '<?php echo $errorMessage; ?>',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        <?php endif; ?>
+    </script>
 </body>
 </html>

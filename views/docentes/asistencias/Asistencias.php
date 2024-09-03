@@ -2,6 +2,24 @@
 include '../../../config/db.php';
 session_start();
 
+// Verificar si el usuario está autenticado
+if (!isset($_SESSION['Identificacion'])) {
+    die("Usuario no autenticado.");
+}
+
+$identificacion = $_SESSION['Identificacion'];
+
+// Consulta SQL para obtener los datos del usuario
+$sql_usuario = "SELECT Nombres, Apellidos, Correo_electronico FROM usuarios WHERE Identificacion = ?";
+$stmt_usuario = $db->prepare($sql_usuario);
+$stmt_usuario->bindParam(1, $identificacion, PDO::PARAM_STR); // Utiliza PDO::PARAM_STR para campos VARCHAR
+$stmt_usuario->execute();
+$usuario = $stmt_usuario->fetch(PDO::FETCH_ASSOC);
+
+$nombreUsuario = $usuario['Nombres'];
+$apellidoUsuario = $usuario['Apellidos'];
+$correoUsuario = $usuario['Correo_electronico'];
+
 // Verificar si se pasó el id_curso como parámetro
 if (!isset($_GET['id_curso'])) {
     die("ID de curso no especificado.");
@@ -202,14 +220,27 @@ $result_estudiantes = $stmt_estudiantes->fetchAll(PDO::FETCH_ASSOC);
                 </li>
             </ul>
         </nav>
-        <div>
-            <div class="linea"></div>
-            
-            <div class="salir">
-        <form method="POST" action="../../../logout.php">
-            <button type="submit" class="salir-button">Salir</button>
-        </form>
-    </div>
+        <div class="linea"></div>
+        <div class="modo-oscuro">
+            <div class="info">
+                <ion-icon name="moon-outline"></ion-icon>
+                <span>Modo Oscuro</span>
+            </div>
+            <div class="switch">
+                <div class="base">
+                    <div class="circulo"></div>
+                </div>
+            </div>
+        </div>
+        <div class="usuario">
+            <img src="../../../assets/profile.jpg" alt="">
+            <div class="info-usuario">
+                <div class="nombre-email">
+                    <span class="nombre"><?php echo htmlspecialchars($nombreUsuario . ' ' . $apellidoUsuario); ?></span>
+                    <span class="email"><?php echo htmlspecialchars($correoUsuario); ?></span>
+                </div>
+                <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+            </div>
         </div>
     </div>
     
@@ -289,7 +320,11 @@ $result_estudiantes = $stmt_estudiantes->fetchAll(PDO::FETCH_ASSOC);
             </tbody>
         </table>
     </main>
-    
+    <div class="salir">
+        <form method="POST" action="../../../logout.php">
+            <button type="submit" class="salir-button">Salir</button>
+        </form>
+    </div>
     <script src="../../../assets/js/main.js"></script>
     <script>
         document.getElementById('fechaSeleccionada').addEventListener('change', function() {

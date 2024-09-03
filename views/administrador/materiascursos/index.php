@@ -98,7 +98,7 @@ $result = $db->query($query);
             <img src="../../../assets/Logo.png" alt="Logo de la empresa" class="logo">
         </div>
         <div class="title">
-            <h1>Gestión de Materias</h1>
+            <h1>Asignar Materia a Cursos</h1>
         </div>
         <div class="datetime">
             <?php
@@ -118,7 +118,7 @@ $result = $db->query($query);
     </header>
     <section class="admin">
         <div class="subtitulo-admin">
-            <h2>Materias</h2>
+            <h2>Asignar Materia a Cursos</h2>
         </div>
         <div class="crear-materia">
             <a href="/dashboard/cjs/views/administrador/materiascursos/create.php" class="button boton-centrado">Asignar Materia</a>
